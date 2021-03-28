@@ -1,5 +1,4 @@
 # info6205_project
-<hr/>
 This is the repository for the final project for the subject Program Structures and Algorithms.
 
 ### Team Members
