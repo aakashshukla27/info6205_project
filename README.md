@@ -4,7 +4,7 @@ This is the repository for the final project for the subject Program Structures 
 
 ### Team Members
 <hr/>
-Aakash Shukla 001557554  Kunjan 
+Aakash Shukla 001557554  Kunjan<br/> 
 ### Project Topic
 <hr/>
 Covid 19 growth simulation, impact of remedial measures and comparison with SARS outbreak of 2003. 
