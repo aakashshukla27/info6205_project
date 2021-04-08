@@ -14,7 +14,7 @@ public class SimulatorApp extends Application {
         try {
             FXMLLoader loader = new FXMLLoader();
             BorderPane root =
-                    (BorderPane)loader.load(getClass().getResource("VirusGUI.fxml").openStream());
+                    (BorderPane)loader.load(getClass().getResource("SimulatorGUI.fxml").openStream());
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
         } catch (Exception e) {
