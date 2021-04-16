@@ -123,7 +123,7 @@ public class SimulatorController {
         clock.stop();
         clock.resetTicks();
         world.getChildren().clear();
-
+        quarantine.getChildren().clear();
         sim = new Simulation(100, world);
         sim.draw();
 

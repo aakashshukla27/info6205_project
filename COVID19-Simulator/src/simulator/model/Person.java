@@ -97,16 +97,23 @@ public class Person {
 
     public void moveQuarantine(Pane pane){
         LocalDateTime now = LocalDateTime.now();
-        if(ChronoUnit.DAYS.between(now, this.timeStamp) >= 10){
-            this.pane = pane;
-            loc = new Position(pane, radius);
-            heading = new Direction();
 
-            c = new Circle(radius, state.getColor());
-            c.setStroke(Color.BLACK);
-            pane.getChildren().add(c);
+        int temp = (int) ChronoUnit.SECONDS.between(this.timeStamp, now);
 
-            origin = new Position(loc.getX(), loc.getY());
+        if(ChronoUnit.SECONDS.between(this.timeStamp, now) >= 5){
+            if(this.state == State.INFECTED){
+                this.pane = pane;
+                loc = new Position(pane, radius);
+                heading = new Direction();
+
+                c = new Circle(radius, state.getColor());
+                c.setStroke(Color.BLACK);
+                pane.getChildren().add(c);
+
+                origin = new Position(loc.getX(), loc.getY());
+                this.draw();
+            }
+
         }
 
     }
