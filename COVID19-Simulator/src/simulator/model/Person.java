@@ -36,7 +36,7 @@ public class Person {
     public Person(State state, Pane pane) {
         this.state = state;
         loc = new Position(pane, radius);
-        heading = new Direction();
+        heading = new Direction(2);
         this.pane = pane;
         c = new Circle(radius, state.getColor());
         c.setStroke(Color.BLACK);
@@ -55,10 +55,6 @@ public class Person {
         loc.move(heading, pane, radius, origin);
     }
 
-
-
-
-
     public void setState(State state) {
         this.state = state;
         c.setFill((state.getColor()));
@@ -68,6 +64,11 @@ public class Person {
         c.setRadius(radius);
         c.setTranslateX(loc.getX());
         c.setTranslateY(loc.getY());
+    }
+     public void undraw() {
+        c.setRadius(0);
+        c.setTranslateX(0);
+        c.setTranslateY(0);
     }
 
     public boolean collide(Person other) {
@@ -99,19 +100,20 @@ public class Person {
         LocalDateTime now = LocalDateTime.now();
 
         int temp = (int) ChronoUnit.SECONDS.between(this.timeStamp, now);
-
+        
         if(ChronoUnit.SECONDS.between(this.timeStamp, now) >= 5){
             if(this.state == State.INFECTED){
+                this.undraw();
                 this.pane = pane;
                 loc = new Position(pane, radius);
-                heading = new Direction();
+                heading = new Direction(0.05);
 
                 c = new Circle(radius, state.getColor());
                 c.setStroke(Color.BLACK);
                 pane.getChildren().add(c);
 
                 origin = new Position(loc.getX(), loc.getY());
-                this.draw();
+                //this.draw();
             }
 
         }
