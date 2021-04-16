@@ -1,9 +1,6 @@
 package simulator.gui;
 
-import simulator.model.Person;
-import simulator.model.State;
-import simulator.model.Position;
-import simulator.model.Simulation;
+import simulator.model.*;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,6 +19,8 @@ import java.util.EnumMap;
 
 public class SimulatorController {
 
+    @FXML
+    Pane quarantine;
     @FXML
     Pane world;
 
@@ -77,6 +76,7 @@ public class SimulatorController {
                 last = now;
                 ticks++;
                 stepCount.setText("" + ticks);
+                moveQuarantine();
             }
         }
 
@@ -115,14 +115,13 @@ public class SimulatorController {
         disableButtons(true, true, true);
 
 
-        world.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+        world.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
     }
 
     @FXML
     public void setup() {
         clock.stop();
         clock.resetTicks();
-
         world.getChildren().clear();
 
         sim = new Simulation(100, world);
@@ -159,6 +158,7 @@ public class SimulatorController {
     public void setSickTime() {
         Person.healtime = 50 * (int)(sickTimeSlider.getValue());
     }
+
 
     public void disableButtons(boolean stop, boolean step, boolean start) {
         stopButton.setDisable(stop);
@@ -209,4 +209,10 @@ public class SimulatorController {
             disableButtons(true, true, true);
         }
     }
+
+    public void moveQuarantine(){
+        sim.moveToQuarantine(quarantine);
+    }
+
+
 }

@@ -13,7 +13,7 @@ public enum State {
         }
     }, RECOVERED {
         public Color getColor() {
-            return Color.GREEN;
+            return Color.DARKGRAY;
         }
     };
 

@@ -3,6 +3,11 @@ package simulator.model;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import simulator.gui.SimulatorController;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 public class Person {
 
@@ -11,7 +16,16 @@ public class Person {
     private State state;
     private Position loc;
     private Direction heading;
-    private Pane pane;
+    private LocalDateTime timeStamp;
+    public Pane getPane() {
+        return pane;
+    }
+
+    public void setPane(Pane pane) {
+
+    }
+
+    public Pane pane;
     private Circle c;
 
     public static int healtime;
@@ -29,15 +43,21 @@ public class Person {
         pane.getChildren().add(c);
 
         origin = new Position(loc.getX(), loc.getY());
+        this.timeStamp = LocalDateTime.now();
     }
 
     public State getState() {
+
         return state;
     }
 
     public void move() {
         loc.move(heading, pane, radius, origin);
     }
+
+
+
+
 
     public void setState(State state) {
         this.state = state;
@@ -52,6 +72,9 @@ public class Person {
 
     public boolean collide(Person other) {
         if (this.loc.distance(other.loc) < 2 * radius) {
+            /**
+             * Change based on probability here
+             */
             if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
                 setState(State.INFECTED);
             }
@@ -63,10 +86,27 @@ public class Person {
     public void getBetter() {
         if (state == State.INFECTED) {
             sicktime++;
+
             if (sicktime > healtime) {
                 setState(State.RECOVERED);
                 sicktime = 0;
             }
         }
+    }
+
+    public void moveQuarantine(Pane pane){
+        LocalDateTime now = LocalDateTime.now();
+        if(ChronoUnit.DAYS.between(now, this.timeStamp) >= 10){
+            this.pane = pane;
+            loc = new Position(pane, radius);
+            heading = new Direction();
+
+            c = new Circle(radius, state.getColor());
+            c.setStroke(Color.BLACK);
+            pane.getChildren().add(c);
+
+            origin = new Position(loc.getX(), loc.getY());
+        }
+
     }
 }

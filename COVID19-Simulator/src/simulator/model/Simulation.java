@@ -1,6 +1,7 @@
 package simulator.model;
 
 import javafx.scene.layout.Pane;
+import simulator.gui.SimulatorController;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,10 @@ public class Simulation {
             Person p = new Person(State.SUSCEPTIBLE, world);
             people.add(p);
         }
+
+
+
+
         Person p = new Person(State.INFECTED, world);
         people.add(p);
     }
@@ -53,4 +58,12 @@ public class Simulation {
         collisionCheck();
         draw();
     }
+
+    public void moveToQuarantine(Pane pane){
+        for(Person p: people){
+            p.moveQuarantine(pane);
+        }
+    }
+
+
 }

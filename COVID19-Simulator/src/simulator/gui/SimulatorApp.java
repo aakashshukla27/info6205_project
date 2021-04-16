@@ -15,6 +15,7 @@ public class SimulatorApp extends Application {
             FXMLLoader loader = new FXMLLoader();
             BorderPane root =
                     (BorderPane)loader.load(getClass().getResource("SimulatorGUI.fxml").openStream());
+            root.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
         } catch (Exception e) {
