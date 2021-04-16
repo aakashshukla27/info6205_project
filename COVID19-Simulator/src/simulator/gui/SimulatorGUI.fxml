@@ -13,6 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="1101.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simulator.gui.SimulatorController">
 
@@ -173,15 +175,38 @@
       <VBox minWidth="200.0" prefHeight="610.0" prefWidth="278.0" spacing="5.0" BorderPane.alignment="CENTER">
 
          <children>
+            <Pane prefHeight="65.0" prefWidth="278.0">
+               <children>
+                  <Line endX="122.0" endY="20.0" fill="#be2020" layoutX="119.0" layoutY="-6.0" startX="22.0" startY="20.0" stroke="#c41111" strokeWidth="3.0">
+                     <effect>
+                        <ColorAdjust brightness="-0.07" contrast="1.0" hue="0.05" saturation="1.0" />
+                     </effect>
+                  </Line>
+                  <Text fill="WHITE" layoutX="37.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Infected" textAlignment="CENTER" wrappingWidth="80.98307228088379" />
+                  <Line endX="122.0" endY="20.0" fill="BLUE" layoutX="119.0" layoutY="12.0" startX="22.0" startY="20.0" stroke="BLUE" strokeWidth="3.0">
+                     <effect>
+                        <ColorAdjust brightness="-0.02" contrast="0.01" hue="0.05" saturation="0.08" />
+                     </effect>
+                  </Line>
+                  <Text fill="WHITE" layoutX="37.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Susceptible" textAlignment="CENTER" wrappingWidth="80.98307228088379" />
+                  <Line endX="122.0" endY="20.0" fill="GREY" layoutX="119.0" layoutY="30.0" startX="22.0" startY="20.0" stroke="GREY" strokeWidth="3.0">
+                     <effect>
+                        <ColorAdjust brightness="0.03" contrast="0.03" hue="0.05" saturation="0.03" />
+                     </effect>
+                  </Line>
+                  <Text fill="WHITE" layoutX="37.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recovered" textAlignment="CENTER" wrappingWidth="80.98307228088379" />
+               </children>
+            </Pane>
 
-            <Pane fx:id="timechart" prefHeight="200.0" prefWidth="200.0" />
+            <Pane fx:id="timechart" prefHeight="147.0" prefWidth="259.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
 
-            <Label text="Population Over Time" textFill="WHITE" />
+            <Label prefHeight="21.0" prefWidth="278.0" text="                       Population Over Time" textFill="WHITE" />
 
-            <Pane fx:id="histogram" prefHeight="142.0" prefWidth="278.0" />
+            <Pane fx:id="histogram" prefHeight="142.0" prefWidth="278.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
 
-            <Label text="Histogram Snapshot" textFill="WHITE" />
-            <Pane fx:id="quarantine" prefHeight="200.0" prefWidth="200.0" />
+            <Label prefHeight="21.0" prefWidth="272.0" text="                         Histogram Snapshot" textFill="WHITE" />
+            <Pane fx:id="quarantine" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Quarantine Zone " textAlignment="CENTER" wrappingWidth="283.9830722808838" />
 
          </children>
 
@@ -205,7 +230,7 @@
 
             <content>
 
-              <AnchorPane fx:id="world" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane fx:id="world" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
 
             </content>
 
