@@ -4,17 +4,20 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 
+
 public class Simulation {
 
     private ArrayList<Person> people;
 
-    public Simulation(int popCount, Pane world) {
+
+    public Simulation(int popCount, Pane world,Pane quarantine) {
         people = new ArrayList<Person>();
         for (int i = 0; i < popCount; i++) {
-            Person p = new Person(State.SUSCEPTIBLE, world);
+            Person p = new Person(State.SUSCEPTIBLE, world,quarantine);
             people.add(p);
         }
-        Person p = new Person(State.INFECTED, world);
+      
+        Person p = new Person(State.INFECTED, world,quarantine);
         people.add(p);
     }
 
@@ -29,8 +32,9 @@ public class Simulation {
     }
     public void draw() {
         for (Person p: people) {
-            p.draw();
+                p.draw();
         }
+       
     }
 
     public void collisionCheck() {
@@ -53,4 +57,5 @@ public class Simulation {
         collisionCheck();
         draw();
     }
+    
 }

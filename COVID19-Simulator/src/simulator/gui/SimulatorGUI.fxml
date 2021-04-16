@@ -17,7 +17,7 @@
 
    <bottom>
 
-      <HBox alignment="CENTER" prefWidth="1628.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="0.0" prefWidth="918.0" BorderPane.alignment="CENTER">
 
          <children>
 
@@ -53,7 +53,7 @@
 
             <Label text="Recovery (sec)" />
 
-            <Slider fx:id="sickTimeSlider" majorTickUnit="2.0" max="8.0" min="2.0" showTickLabels="true" showTickMarks="true" style="-fx-padding: 15px;" value="5.0" />
+            <Slider fx:id="sickTimeSlider" majorTickUnit="2.0" max="8.0" min="2.0" showTickLabels="true" showTickMarks="true" style="-fx-padding: 15px; -fx-pref-width: 300px;" styleClass=".sickTimeSlider { -fx-pref-width: 300px; }.sickTimeSlider .axis { -fx-tick-label-fill: red; }.sickTimeSlider { -fx-pref-width: 300px; }.sickTimeSlider .axis { -fx-tick-label-fill: red; }" value="5.0" />
 
             <Label text="Distance" />
 
@@ -62,6 +62,7 @@
             <Label text="Timestep" />
 
             <TextField fx:id="stepCount" editable="false" />
+            <Pane fx:id="quarantine" prefHeight="313.0" prefWidth="247.0" />
 
          </children>
 
@@ -77,7 +78,7 @@
 
    <right>
 
-      <VBox minWidth="200.0" prefHeight="610.0" prefWidth="278.0" spacing="5.0" BorderPane.alignment="CENTER">
+      <VBox minWidth="200.0" prefHeight="609.0" prefWidth="88.0" spacing="5.0" BorderPane.alignment="CENTER">
 
          <children>
 
@@ -103,7 +104,7 @@
 
    <center>
 
-      <TabPane prefHeight="610.0" prefWidth="579.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane prefHeight="475.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
 
         <tabs>
 
@@ -111,7 +112,7 @@
 
             <content>
 
-              <AnchorPane fx:id="world" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane fx:id="world" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="577.0" prefWidth="526.0" />
 
             </content>
 

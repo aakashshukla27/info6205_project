@@ -24,6 +24,9 @@ public class SimulatorController {
 
     @FXML
     Pane world;
+    
+    @FXML
+    Pane quarantine;
 
     @FXML
     Pane histogram;
@@ -54,6 +57,9 @@ public class SimulatorController {
 
     @FXML
     TextField stepCount;
+    
+    @FXML
+    Button hideButton;
 
     Simulation sim;
 
@@ -114,8 +120,8 @@ public class SimulatorController {
         clock = new Movement();
         disableButtons(true, true, true);
 
-
         world.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+        quarantine.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
     }
 
     @FXML
@@ -125,7 +131,7 @@ public class SimulatorController {
 
         world.getChildren().clear();
 
-        sim = new Simulation(100, world);
+        sim = new Simulation(100, world,quarantine);
         sim.draw();
 
         setSize();
@@ -204,9 +210,11 @@ public class SimulatorController {
                 timechart.getChildren().add(c);
             }
         }
-        if (!currentPop.containsKey(State.INFECTED)) {
-            clock.stop();
-            disableButtons(true, true, true);
-        }
+//        if (!currentPop.containsKey(State.INFECTED)) {
+//            clock.stop();
+//            disableButtons(true, true, true);
+//        }
     }
+    
+   
 }

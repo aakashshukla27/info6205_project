@@ -15,7 +15,11 @@ public enum State {
         public Color getColor() {
             return Color.GREEN;
         }
-    };
+     },QUARANTINED{
+         public Color getColor() {
+            return Color.GRAY;
+        }
+     };
 
     public abstract Color getColor();
 }
