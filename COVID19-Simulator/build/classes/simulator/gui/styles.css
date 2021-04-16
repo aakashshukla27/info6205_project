@@ -1,0 +1,17 @@
+#mainPane{
+    -fx-background-color: black;
+}
+
+Label{
+    -fx-text-fill: white;
+}
+.jfx-tab-pane .tab-header-background { -fx-background-color: #35464F; }
+
+
+.tab-label {
+    -fx-text-fill: black ;
+}
+
+#tabPane{
+    -fx-background-color: black !important;
+}

@@ -77,6 +77,7 @@ public class Person {
              */
             if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
                 setState(State.INFECTED);
+                this.timeStamp = LocalDateTime.now();
             }
             return true;
         }
