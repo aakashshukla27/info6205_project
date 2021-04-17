@@ -45,8 +45,8 @@ public class SimulatorController {
     @FXML
     Slider sizeSlider;
 
-    @FXML
-    Slider travelSlider;
+//    @FXML
+//    Slider travelSlider;
 
     @FXML
     Slider sickTimeSlider;
@@ -54,9 +54,20 @@ public class SimulatorController {
     @FXML
     TextField stepCount;
 
+    @FXML
+    Slider socialDistancingSlider;
+
+    @FXML
+    Slider quarantineSlider;
+
+    @FXML
+    Slider maskSlider;
+
     Simulation sim;
 
     EnumMap<State, Rectangle> hrects = new EnumMap<State, Rectangle>(State.class);
+
+    public static int quarantineTime;
 
     private Movement clock;
 
@@ -99,18 +110,39 @@ public class SimulatorController {
                 setSize();
             }
         });
-        travelSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                setLimit();
-            }
-        });
+//        travelSlider.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+//                //setLimit();
+//            }
+//        });
         sickTimeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 setSickTime();
             }
         });
+
+        socialDistancingSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                setSocialDistancingLimit();
+            }
+        });
+        quarantineSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                setQuarantine();
+            }
+        });
+        maskSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                setMask();
+            }
+        });
+
+
         clock = new Movement();
         disableButtons(true, true, true);
 
@@ -128,9 +160,10 @@ public class SimulatorController {
         sim.draw();
 
         setSize();
-        setLimit();
+        //setLimit();
+        setSocialDistancingLimit();
         setSickTime();
-
+        setMask();
         disableButtons(true, false, false);
 
         histogram.getChildren().clear();
@@ -146,13 +179,39 @@ public class SimulatorController {
         drawCharts();
     }
 
+    public void setMask(){
+        int temp = (int)(maskSlider.getValue());
+        sim.setMask(temp);
+    }
+
     public void setSize() {
         Person.radius = (int) (sizeSlider.getValue());
         sim.draw();
     }
 
-    public void setLimit() {
-        Position.limit = (int)(travelSlider.getValue());
+//    public void setLimit() {
+//
+//        System.out.println((int)(travelSlider.getValue()));
+//        Position.limit = (int)(travelSlider.getValue());
+//    }
+
+    public void setQuarantine(){
+        quarantineTime = (int)(quarantineSlider.getValue());
+    }
+
+    public void setSocialDistancingLimit(){
+        double temp = (double)(socialDistancingSlider.getValue());
+        System.out.println(temp);
+        if(temp == 0){
+            temp = 0.01;
+        }
+        if(temp == 1){
+
+        }
+        temp = 1 - temp;
+        temp *= 200;
+
+        Position.limit = (int) temp;
     }
 
     public void setSickTime() {

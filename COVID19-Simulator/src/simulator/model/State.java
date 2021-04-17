@@ -15,6 +15,8 @@ public enum State {
         public Color getColor() {
             return Color.DARKGRAY;
         }
+    }, ASYMPTOMATIC{
+       public Color getColor(){return Color.YELLOW;}
     };
 
     public abstract Color getColor();

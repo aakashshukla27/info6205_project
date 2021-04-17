@@ -13,6 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="1101.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simulator.gui.SimulatorController">
 
@@ -63,20 +65,7 @@
 
             <Label text="Recovery (sec)" textFill="WHITE" />
 
-            <Slider fx:id="sickTimeSlider" majorTickUnit="2.0" max="8.0" min="2.0" showTickLabels="true" showTickMarks="true" stylesheets="@styles.css" value="5.0">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-               <effect>
-                  <ColorAdjust brightness="1.0" />
-               </effect></Slider>
-
-            <Label text="Distance" textFill="WHITE" />
-
-            <Slider fx:id="travelSlider" max="200.0" min="10.0" prefHeight="38.0" prefWidth="279.0" showTickLabels="true" showTickMarks="true" stylesheets="@styles.css" value="200.0">
+            <Slider fx:id="sickTimeSlider" majorTickUnit="2.0" max="25.0" min="2.0" showTickLabels="true" showTickMarks="true" stylesheets="@styles.css" value="5.0">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -87,19 +76,25 @@
                   <ColorAdjust brightness="1.0" />
                </effect></Slider>
             <Label text="Social Distancing Factor" />
-            <Slider showTickLabels="true" showTickMarks="true">
+            <Slider fx:id="socialDistancingSlider" majorTickUnit="0.25" max="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true">
                <padding>
                   <Insets left="10.0" right="10.0" />
                </padding>
+               <effect>
+                  <ColorAdjust brightness="1.0" />
+               </effect>
             </Slider>
             <Label text="Mask Factor" />
-            <Slider>
+            <Slider fx:id="maskSlider" showTickLabels="true" showTickMarks="true">
                <padding>
                   <Insets left="10.0" right="10.0" />
                </padding>
+               <effect>
+                  <ColorAdjust brightness="1.0" />
+               </effect>
             </Slider>
             <Label text="Quarantine After" />
-            <Slider blockIncrement="1.0" majorTickUnit="2.0" max="10.0" showTickLabels="true" showTickMarks="true">
+            <Slider fx:id="quarantineSlider" blockIncrement="1.0" majorTickUnit="2.0" max="10.0" showTickLabels="true" showTickMarks="true">
                <effect>
                   <ColorAdjust brightness="1.0" />
                </effect>
@@ -108,7 +103,7 @@
                </padding>
             </Slider>
             <Label text="Probability to travel to central location at given hour" />
-            <Slider blockIncrement="1.0" max="2.0" minorTickCount="0" showTickLabels="true" showTickMarks="true">
+            <Slider fx:id="centralLocationSlider" blockIncrement="1.0" majorTickUnit="0.25" max="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true">
                <effect>
                   <ColorAdjust brightness="1.0" />
                </effect>
@@ -117,7 +112,7 @@
                </padding>
             </Slider>
             <Label text="Travel to another community" />
-            <Slider showTickLabels="true" showTickMarks="true">
+            <Slider fx:id="communityTravelSlider" majorTickUnit="0.25" max="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true">
                <effect>
                   <ColorAdjust brightness="1.0" />
                </effect>
@@ -125,8 +120,8 @@
                   <Insets left="10.0" right="10.0" />
                </padding>
             </Slider>
-            <Label text="Asymptotic Percentage" />
-            <Slider showTickLabels="true" showTickMarks="true">
+            <Label text="Asymptomatic Percentage" />
+            <Slider fx:id="asymptomaticSlider" showTickLabels="true" showTickMarks="true">
                <effect>
                   <ColorAdjust brightness="1.0" />
                </effect>
@@ -135,7 +130,7 @@
                </padding>
             </Slider>
             <Label text="Vaccinated Population" />
-            <Slider showTickLabels="true" showTickMarks="true">
+            <Slider fx:id="vaccinatedSlider" showTickLabels="true" showTickMarks="true">
                <effect>
                   <ColorAdjust brightness="1.0" />
                </effect>
@@ -173,15 +168,38 @@
       <VBox minWidth="200.0" prefHeight="610.0" prefWidth="278.0" spacing="5.0" BorderPane.alignment="CENTER">
 
          <children>
+            <Pane prefHeight="65.0" prefWidth="278.0">
+               <children>
+                  <Line endX="122.0" endY="20.0" fill="#be2020" layoutX="119.0" layoutY="-6.0" startX="22.0" startY="20.0" stroke="#c41111" strokeWidth="3.0">
+                     <effect>
+                        <ColorAdjust brightness="-0.07" contrast="1.0" hue="0.05" saturation="1.0" />
+                     </effect>
+                  </Line>
+                  <Text fill="WHITE" layoutX="37.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Infected" textAlignment="CENTER" wrappingWidth="80.98307228088379" />
+                  <Line endX="122.0" endY="20.0" fill="BLUE" layoutX="119.0" layoutY="12.0" startX="22.0" startY="20.0" stroke="BLUE" strokeWidth="3.0">
+                     <effect>
+                        <ColorAdjust brightness="-0.02" contrast="0.01" hue="0.05" saturation="0.08" />
+                     </effect>
+                  </Line>
+                  <Text fill="WHITE" layoutX="37.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Susceptible" textAlignment="CENTER" wrappingWidth="80.98307228088379" />
+                  <Line endX="122.0" endY="20.0" fill="GREY" layoutX="119.0" layoutY="30.0" startX="22.0" startY="20.0" stroke="GREY" strokeWidth="3.0">
+                     <effect>
+                        <ColorAdjust brightness="0.03" contrast="0.03" hue="0.05" saturation="0.03" />
+                     </effect>
+                  </Line>
+                  <Text fill="WHITE" layoutX="37.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Removed" textAlignment="CENTER" wrappingWidth="80.98307228088379" />
+               </children>
+            </Pane>
 
-            <Pane fx:id="timechart" prefHeight="200.0" prefWidth="200.0" />
+            <Pane fx:id="timechart" prefHeight="147.0" prefWidth="259.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
 
-            <Label text="Population Over Time" textFill="WHITE" />
+            <Label prefHeight="21.0" prefWidth="278.0" text="                       Population Over Time" textFill="WHITE" />
 
-            <Pane fx:id="histogram" prefHeight="142.0" prefWidth="278.0" />
+            <Pane fx:id="histogram" prefHeight="142.0" prefWidth="278.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
 
-            <Label text="Histogram Snapshot" textFill="WHITE" />
-            <Pane fx:id="quarantine" prefHeight="200.0" prefWidth="200.0" />
+            <Label prefHeight="21.0" prefWidth="272.0" text="                         Histogram Snapshot" textFill="WHITE" />
+            <Pane fx:id="quarantine" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Quarantine Zone " textAlignment="CENTER" wrappingWidth="283.9830722808838" />
 
          </children>
 
@@ -205,7 +223,7 @@
 
             <content>
 
-              <AnchorPane fx:id="world" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane fx:id="world" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
 
             </content>
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Simulation {
 
-    private ArrayList<Person> people;
+    public static ArrayList<Person> people;
 
     public Simulation(int popCount, Pane world) {
         people = new ArrayList<Person>();
@@ -15,9 +15,6 @@ public class Simulation {
             Person p = new Person(State.SUSCEPTIBLE, world);
             people.add(p);
         }
-
-
-
 
         Person p = new Person(State.INFECTED, world);
         people.add(p);
@@ -61,7 +58,17 @@ public class Simulation {
 
     public void moveToQuarantine(Pane pane){
         for(Person p: people){
-            p.moveQuarantine(pane);
+            if(p.getState() == State.INFECTED){
+                p.moveQuarantine(pane);
+            }
+        }
+    }
+
+    public void setMask(int masked){
+        int temp = people.size() - 1;
+        temp = masked * temp/100;
+        for(int i =0; i<temp; i++){
+            people.get(i).mask = true;
         }
     }
 

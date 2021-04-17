@@ -8,6 +8,7 @@ import simulator.gui.SimulatorController;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Random;
 
 public class Person {
 
@@ -17,13 +18,13 @@ public class Person {
     private Position loc;
     private Direction heading;
     private LocalDateTime timeStamp;
+    private int quarantineAfter = 10;
+    private double asymptomaticPercentage = 0.5;
+    public boolean mask;
     public Pane getPane() {
         return pane;
     }
 
-    public void setPane(Pane pane) {
-
-    }
 
     public Pane pane;
     private Circle c;
@@ -32,7 +33,7 @@ public class Person {
     private int sicktime = 0;
 
     private Position origin;
-
+    Random rand = new Random();
     public Person(State state, Pane pane) {
         this.state = state;
         loc = new Position(pane, radius);
@@ -44,6 +45,8 @@ public class Person {
 
         origin = new Position(loc.getX(), loc.getY());
         this.timeStamp = LocalDateTime.now();
+        quarantineAfter = SimulatorController.quarantineTime;
+        mask = false;
     }
 
     public State getState() {
@@ -76,9 +79,19 @@ public class Person {
             /**
              * Change based on probability here
              */
-            if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
-                setState(State.INFECTED);
-                this.timeStamp = LocalDateTime.now();
+            if ((other.state == State.INFECTED && state == State.SUSCEPTIBLE)|| (other.state == State.ASYMPTOMATIC && state == State.SUSCEPTIBLE)) {
+                if(mask == true){
+                    double random =Math.random();
+                    if(random < 0.06){
+                        setState(State.INFECTED);
+                        this.timeStamp = LocalDateTime.now();
+                    }
+                }
+                if(mask == false){
+                    setState(State.INFECTED);
+                    this.timeStamp = LocalDateTime.now();
+                }
+
             }
             return true;
         }
@@ -99,14 +112,18 @@ public class Person {
     public void moveQuarantine(Pane pane){
         LocalDateTime now = LocalDateTime.now();
 
+
+
+
         int temp = (int) ChronoUnit.SECONDS.between(this.timeStamp, now);
-        
-        if(ChronoUnit.SECONDS.between(this.timeStamp, now) >= 5){
+
+        if(ChronoUnit.SECONDS.between(this.timeStamp, now) == quarantineAfter){
             if(this.state == State.INFECTED){
+
                 this.undraw();
                 this.pane = pane;
                 loc = new Position(pane, radius);
-                heading = new Direction(0.05);
+                heading = new Direction(2);
 
                 c = new Circle(radius, state.getColor());
                 c.setStroke(Color.BLACK);
