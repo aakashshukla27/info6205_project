@@ -1,5 +1,6 @@
 package simulator.gui;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import simulator.model.*;
 import javafx.animation.AnimationTimer;
@@ -13,7 +14,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Random;
 
 public class SimulatorController {
@@ -68,6 +71,8 @@ public class SimulatorController {
     TabPane tabPane;
     @FXML
     Slider communityTravelSlider;
+    @FXML
+    ComboBox selectedDisease;
 
     //Standard simulation
     Simulation sim;
@@ -84,12 +89,17 @@ public class SimulatorController {
 
     int simulationType;
 
+
+
+
     //Used for graphs
     EnumMap<State, Rectangle> hrects = new EnumMap<State, Rectangle>(State.class);
 
     //Quarantine time -> used in person class
     public static int quarantineTime;
 
+
+    public static Random random = new Random();
     //used for timing the simulation
     private Movement clock;
     //Animation
@@ -160,6 +170,7 @@ public class SimulatorController {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 setMask();
+                setSimulationMask();
             }
         });
         vaccinatedSlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -195,12 +206,15 @@ public class SimulatorController {
         clock.resetTicks();
         //world.getChildren().clear();
         quarantine.getChildren().clear();
-
-
+        selectedDisease.getItems().add(1, "Covid 19");
+        selectedDisease.getItems().add(2, "MERS");
+//        List<String> diseases = Arrays.asList(new String[]{"Covid 19", "MERS"});
+//        selectedDisease.setItems((ObservableList) diseases);
+        random.setSeed(1);
         switch (tabPane.getSelectionModel().getSelectedIndex()){
             case 0:
                 world.getChildren().clear();
-                sim = new Simulation(100, world);
+                sim = new Simulation(100, world, random.nextDouble());
                 sim.setSimulationType(1);
                 sim.draw();
                 break;
@@ -208,7 +222,8 @@ public class SimulatorController {
                 centralLocation.getChildren().clear();
                 centralLocation.getChildren().add(market);
                 centralLocation.getChildren().add(marketLabel);
-                simMarket = new Simulation(100, centralLocation);
+                simMarket = new Simulation(100, centralLocation, random.nextDouble());
+
                 simMarket.setSimulationType(2);
                 simMarket.draw();
                 break;
@@ -217,14 +232,15 @@ public class SimulatorController {
                 community2.getChildren().clear();
                 community3.getChildren().clear();
                 community4.getChildren().clear();
-                simCommunity1 = new Simulation(5, community1);
+                simCommunity1 = new Simulation(5, community1, random.nextDouble());
                 simCommunity1.draw();
-                simCommunity2 = new Simulation(10, community2);
+                simCommunity2 = new Simulation(10, community2, random.nextDouble());
                 simCommunity2.draw();
-                simCommunity3 = new Simulation(5, community3);
+                simCommunity3 = new Simulation(5, community3, random.nextDouble());
                 simCommunity3.draw();
-                simCommunity4 = new Simulation(15, community4);
+                simCommunity4 = new Simulation(15, community4, random.nextDouble());
                 simCommunity4.draw();
+                setNewCommunity();
                 break;
         }
         setSize();
@@ -232,7 +248,7 @@ public class SimulatorController {
         setSickTime();
         setMask();
         setVaccinated();
-        setNewCommunity();
+        setSimulationMask();
        
         disableButtons(true, false, false);
         disableQuarantine();
@@ -249,6 +265,25 @@ public class SimulatorController {
         drawCharts();
     }
 
+    public void setSimulationMask(){
+        int temp = (int)(maskSlider.getValue());
+        switch(tabPane.getSelectionModel().getSelectedIndex())
+        {
+            case 0:
+                sim.setSimulationMask(temp);
+                break;
+            case 1:
+                simMarket.setSimulationMask(temp);
+                break;
+            case 2:
+                simCommunity1.setSimulationMask(temp);
+                simCommunity2.setSimulationMask(temp);
+                simCommunity3.setSimulationMask(temp);
+                simCommunity4.setSimulationMask(temp);
+                break;
+
+        }
+    }
 
 
     public void setMask(){
@@ -307,12 +342,17 @@ public class SimulatorController {
     public void setQuarantine(){
         quarantineTime = (int)(quarantineSlider.getValue());
     }
-     public void setNewCommunity(){
-       // Person.setCommunityTravelFactor((double)(communityTravelSlider.getValue()));
-          simCommunity1.setMoveNewCommunity((double)(communityTravelSlider.getValue()));
-          simCommunity2.setMoveNewCommunity((double)(communityTravelSlider.getValue()));
-          simCommunity3.setMoveNewCommunity((double)(communityTravelSlider.getValue()));
-          simCommunity4.setMoveNewCommunity((double)(communityTravelSlider.getValue()));
+    public void setNewCommunity(){
+
+        switch(tabPane.getSelectionModel().getSelectedIndex()) {
+            case 2:
+
+                simCommunity1.setMoveNewCommunity((double) (communityTravelSlider.getValue()));
+                simCommunity2.setMoveNewCommunity((double) (communityTravelSlider.getValue()));
+                simCommunity3.setMoveNewCommunity((double) (communityTravelSlider.getValue()));
+                simCommunity4.setMoveNewCommunity((double) (communityTravelSlider.getValue()));
+                break;
+        }
     }
     public void setSocialDistancingLimit(){
         double temp = (double)(socialDistancingSlider.getValue());
@@ -459,11 +499,8 @@ public class SimulatorController {
     }
 
     public void moveToNewCommunity(){
-        //Random rand = new Random();
         switch(tabPane.getSelectionModel().getSelectedIndex()){
             case 2:
-                //int temp = (int) communityTravelSlider.getValue();
-                //int random = rand.nextInt(4);
                 simCommunity1.moveToNewCommunity(community2);
                 simCommunity2.moveToNewCommunity(community3);
                 simCommunity3.moveToNewCommunity(community4);

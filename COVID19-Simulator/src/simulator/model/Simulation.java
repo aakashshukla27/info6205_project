@@ -9,7 +9,9 @@ public class Simulation {
 
     public ArrayList<Person> people;
 
-    public Simulation(int popCount, Pane world) {
+    private static int maskedPercentage;
+
+    public Simulation(int popCount, Pane world, double value) {
         people = new ArrayList<Person>();
         for (int i = 0; i < popCount; i++) {
             Person p = new Person(State.SUSCEPTIBLE, world);
@@ -39,7 +41,7 @@ public class Simulation {
     public void collisionCheck() {
         for (Person p : people) {
             for (Person q : people) {
-                p.collide(q);
+                p.collide(q, maskedPercentage);
             }
         }
     }
@@ -75,7 +77,6 @@ public class Simulation {
 
     public void moveToNewCommunity(Pane pane){
         for(Person p: people){
-           // p.setCommunityTravelFactor(chance);
             p.moveToNewCommunity(pane);
         }
     }
@@ -92,6 +93,13 @@ public class Simulation {
         }
     }
 
+    public void setSimulationMask(int count){
+        maskedPercentage = count;
+    }
+
+    public static int getMaskedPercentage() {
+        return maskedPercentage;
+    }
 
     public void vaccinatePeople(int count){
         if(people.size() > 0){

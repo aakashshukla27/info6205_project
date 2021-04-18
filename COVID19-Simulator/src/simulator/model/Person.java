@@ -21,10 +21,7 @@ public class Person {
     private LocalDateTime timeStamp;
     private int quarantineAfter = 10;
     private double asymptomaticPercentage = 0.5;
-
-    public int getSimulationType() {
-        return simulationType;
-    }
+    private int othersInfected = 0;
 
     public void setSimulationType(int simulationType) {
         this.simulationType = simulationType;
@@ -32,31 +29,20 @@ public class Person {
 
     private int simulationType;
 
-    public boolean isMask() {
-        return mask;
-    }
-
     public void setMask(boolean mask) {
         this.mask = mask;
     }
 
     private boolean mask;
 
-    public boolean isVaccinated() {
-        return vaccinated;
-    }
-
     public void setVaccinated(boolean vaccinated) {
         this.vaccinated = vaccinated;
     }
 
     private boolean vaccinated;
-    public Pane getPane() {
-        return pane;
-    }
-
 
     public Pane pane;
+
     private Circle c;
 
     public static int healtime;
@@ -73,12 +59,13 @@ public class Person {
     }
 
     private double communityTravelFactor;
+    //private double randomNumber =
 
-
-    Random rand = new Random();
+    final Random rand = new Random();
     public Person(State state, Pane pane) {
         this.state = state;
         loc = new Position(pane, radius);
+
         heading = new Direction(2);
         this.pane = pane;
         c = new Circle(radius, state.getColor());
@@ -104,6 +91,9 @@ public class Person {
         c.setFill((state.getColor()));
     }
 
+
+
+
     public void draw() {
         c.setRadius(radius);
         c.setTranslateX(loc.getX());
@@ -125,7 +115,7 @@ public class Person {
                 }
             }
             if(toTransmit && isInMarket()){
-                double random =Math.random();
+                double random = Math.random();
                 if(mask && vaccinated){
                     if(random < 0.06){
                         setState(State.INFECTED);
@@ -165,36 +155,47 @@ public class Person {
     }
 
 
-    public boolean collide(Person other) {
+    public void collide(Person other, int maskedPercentage) {
         if (this.loc.distance(other.loc) < 2 * radius) {
 
-            double random =Math.random();
+
             if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
-                if(mask && vaccinated){
 
-                    if(random < 0.06){
+                double effectiveR0 = 3 * (double)(1 - ((maskedPercentage / 100) * 0.95));
 
-                        setState(State.INFECTED);
-                        this.timeStamp = LocalDateTime.now();
-                    }
-                }
-                else if(!mask && vaccinated){
-
-                    if(random < 0.20){
-
-                        setState(State.INFECTED);
-                        this.timeStamp = LocalDateTime.now();
-                    }
-                }
-                else if(!mask){
+                if (other.othersInfected < Math.ceil(effectiveR0)) {
                     setState(State.INFECTED);
                     this.timeStamp = LocalDateTime.now();
+                    other.othersInfected++;
                 }
-
             }
-            return true;
+
+//            double random = Math.random();
+//            if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
+//                if(mask && vaccinated){
+//
+//                    if(random < 0.06){
+//
+//                        setState(State.INFECTED);
+//                        this.timeStamp = LocalDateTime.now();
+//                    }
+//                }
+//                else if(!mask && vaccinated){
+//
+//                    if(random < 0.20){
+//
+//                        setState(State.INFECTED);
+//                        this.timeStamp = LocalDateTime.now();
+//                    }
+//                }
+//                else if(!mask){
+//                    setState(State.INFECTED);
+//                    this.timeStamp = LocalDateTime.now();
+//                }
+//
+//            }
         }
-        return false;
+
     }
 
     public void getBetter() {
@@ -210,23 +211,31 @@ public class Person {
 
     public void moveQuarantine(Pane pane){
         LocalDateTime now = LocalDateTime.now();
+        if(this.othersInfected == 3){
+            this.moveQuarantineDriver(pane);
+        }
 
         if(ChronoUnit.SECONDS.between(this.timeStamp, now) == quarantineAfter){
             if(this.state == State.INFECTED){
 
-                this.undraw();
-                this.pane = pane;
-                loc = new Position(pane, radius);
-                heading = new Direction(2);
 
-                c = new Circle(radius, state.getColor());
-                c.setStroke(Color.BLACK);
-                pane.getChildren().add(c);
 
-                origin = new Position(loc.getX(), loc.getY());
-                //this.draw();
+                this.moveQuarantineDriver(pane);
             }
         }
+    }
+
+    public void moveQuarantineDriver(Pane pane){
+        this.undraw();
+        this.pane = pane;
+        loc = new Position(pane, radius);
+        heading = new Direction(2);
+
+        c = new Circle(radius, state.getColor());
+        c.setStroke(Color.BLACK);
+        pane.getChildren().add(c);
+
+        origin = new Position(loc.getX(), loc.getY());
     }
 
     public void moveToNewCommunity(Pane pane){
