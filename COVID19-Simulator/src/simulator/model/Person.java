@@ -7,6 +7,7 @@ import simulator.gui.SimulatorController;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
@@ -20,7 +21,36 @@ public class Person {
     private LocalDateTime timeStamp;
     private int quarantineAfter = 10;
     private double asymptomaticPercentage = 0.5;
-    public boolean mask;
+
+    public int getSimulationType() {
+        return simulationType;
+    }
+
+    public void setSimulationType(int simulationType) {
+        this.simulationType = simulationType;
+    }
+
+    private int simulationType;
+
+    public boolean isMask() {
+        return mask;
+    }
+
+    public void setMask(boolean mask) {
+        this.mask = mask;
+    }
+
+    private boolean mask;
+
+    public boolean isVaccinated() {
+        return vaccinated;
+    }
+
+    public void setVaccinated(boolean vaccinated) {
+        this.vaccinated = vaccinated;
+    }
+
+    private boolean vaccinated;
     public Pane getPane() {
         return pane;
     }
@@ -50,7 +80,6 @@ public class Person {
     }
 
     public State getState() {
-
         return state;
     }
 
@@ -74,20 +103,81 @@ public class Person {
         c.setTranslateY(0);
     }
 
+    public void checkInMarket(ArrayList<Person> ipList){
+        if(simulationType == 2){
+            boolean toTransmit = false;
+            for (Person person : ipList) {
+                if (person.isInMarket() && (person.getState() == State.INFECTED)) {
+                    toTransmit = true;
+                    break;
+                }
+            }
+            if(toTransmit && isInMarket()){
+                double random =Math.random();
+                if(mask && vaccinated){
+                    if(random < 0.06){
+                        setState(State.INFECTED);
+                        timeStamp = LocalDateTime.now();
+                    }
+                }
+                else if(!mask && vaccinated){
+                    if(random < 0.20){
+                        setState(State.INFECTED);
+                        timeStamp = LocalDateTime.now();
+                    }
+                }
+                else if(!mask){
+                    setState(State.INFECTED);
+                    timeStamp = LocalDateTime.now();
+                }
+            }
+
+
+        }
+    }
+
+    private boolean isInMarket(){
+        double x1, x2, y1, y2;
+        x1 = 209;
+        x2 = 309;
+        y1 = 244;
+        y2 = 337;
+        double currentX = loc.getX();
+        double currentY = loc.getY();
+        if((x1 <= currentX)&&(currentX <= x2)&&(y1 <=currentY)&&(currentY <= y2)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
     public boolean collide(Person other) {
         if (this.loc.distance(other.loc) < 2 * radius) {
-            /**
-             * Change based on probability here
-             */
-            if ((other.state == State.INFECTED && state == State.SUSCEPTIBLE)|| (other.state == State.ASYMPTOMATIC && state == State.SUSCEPTIBLE)) {
-                if(mask == true){
-                    double random =Math.random();
+
+            double random =Math.random();
+            if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
+                if(mask && vaccinated){
+
                     if(random < 0.06){
+
                         setState(State.INFECTED);
                         this.timeStamp = LocalDateTime.now();
                     }
                 }
-                if(mask == false){
+                else if(!mask && vaccinated){
+
+                    if(random < 0.20){
+
+                        setState(State.INFECTED);
+                        this.timeStamp = LocalDateTime.now();
+                    }
+                }
+
+
+
+                else if(!mask){
                     setState(State.INFECTED);
                     this.timeStamp = LocalDateTime.now();
                 }
@@ -111,11 +201,6 @@ public class Person {
 
     public void moveQuarantine(Pane pane){
         LocalDateTime now = LocalDateTime.now();
-
-
-
-
-        int temp = (int) ChronoUnit.SECONDS.between(this.timeStamp, now);
 
         if(ChronoUnit.SECONDS.between(this.timeStamp, now) == quarantineAfter){
             if(this.state == State.INFECTED){

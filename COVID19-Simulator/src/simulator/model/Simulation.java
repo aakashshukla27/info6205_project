@@ -13,6 +13,7 @@ public class Simulation {
         people = new ArrayList<Person>();
         for (int i = 0; i < popCount; i++) {
             Person p = new Person(State.SUSCEPTIBLE, world);
+
             people.add(p);
         }
 
@@ -49,11 +50,19 @@ public class Simulation {
         }
     }
 
+    public void checkInMarket(){
+        for(Person p: people){
+            p.checkInMarket(people);
+        }
+    }
+
     public void step() {
         move();
         heal();
         collisionCheck();
+        checkInMarket();
         draw();
+
     }
 
     public void moveToQuarantine(Pane pane){
@@ -65,12 +74,32 @@ public class Simulation {
     }
 
     public void setMask(int masked){
-        int temp = people.size() - 1;
-        temp = masked * temp/100;
-        for(int i =0; i<temp; i++){
-            people.get(i).mask = true;
+        if(people.size()>0){
+            for(Person p: people){
+                p.setMask(false);
+            }
+
+            for(int i=0; i<masked; i++){
+                people.get(i).setMask(true);
+            }
         }
     }
 
 
+    public void vaccinatePeople(int count){
+        if(people.size() > 0){
+            for(Person p: people){
+                p.setVaccinated(false);
+            }
+            for(int i=0; i<count; i++){
+                people.get(i).setVaccinated(true);
+            }
+        }
+    }
+
+    public void setSimulationType(int type){
+        for(Person p: people){
+            p.setSimulationType(type);
+        }
+    }
 }

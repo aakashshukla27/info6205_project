@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
@@ -14,6 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="1101.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simulator.gui.SimulatorController">
@@ -93,6 +95,11 @@
                   <ColorAdjust brightness="1.0" />
                </effect>
             </Slider>
+            <CheckBox fx:id="enableQuarantine" mnemonicParsing="false" text="Enable Quarantine" textFill="WHITE">
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </CheckBox>
             <Label text="Quarantine After" />
             <Slider fx:id="quarantineSlider" blockIncrement="1.0" majorTickUnit="2.0" max="10.0" showTickLabels="true" showTickMarks="true">
                <effect>
@@ -113,15 +120,6 @@
             </Slider>
             <Label text="Travel to another community" />
             <Slider fx:id="communityTravelSlider" majorTickUnit="0.25" max="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true">
-               <effect>
-                  <ColorAdjust brightness="1.0" />
-               </effect>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-            </Slider>
-            <Label text="Asymptomatic Percentage" />
-            <Slider fx:id="asymptomaticSlider" showTickLabels="true" showTickMarks="true">
                <effect>
                   <ColorAdjust brightness="1.0" />
                </effect>
@@ -197,7 +195,7 @@
 
             <Pane fx:id="histogram" prefHeight="142.0" prefWidth="278.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
 
-            <Label prefHeight="21.0" prefWidth="272.0" text="                         Histogram Snapshot" textFill="WHITE" />
+            <Label prefHeight="21.0" prefWidth="272.0" text="                     Category Count Histogram" textFill="WHITE" />
             <Pane fx:id="quarantine" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Quarantine Zone " textAlignment="CENTER" wrappingWidth="283.9830722808838" />
 
@@ -233,7 +231,11 @@
 
             <content>
 
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane fx:id="centralLocation" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Rectangle fx:id="market" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="93.0" layoutX="209.0" layoutY="244.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                        <Label fx:id="marketLabel" layoutX="240.0" layoutY="282.0" text="Market" />
+                     </children></AnchorPane>
 
             </content>
 
@@ -243,7 +245,7 @@
 
             <content>
 
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane fx:id="communities" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
 
             </content>
 

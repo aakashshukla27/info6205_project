@@ -1,13 +1,11 @@
 package simulator.gui;
 
+import javafx.scene.control.*;
 import simulator.model.*;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -20,57 +18,64 @@ import java.util.EnumMap;
 public class SimulatorController {
 
     @FXML
+    Label marketLabel;
+    @FXML
     Pane quarantine;
     @FXML
     Pane world;
-
+    @FXML
+    Pane centralLocation;
+    @FXML
+    Rectangle market;
     @FXML
     Pane histogram;
-
     @FXML
     Pane timechart;
-
     @FXML
     Button startButton;
-
     @FXML
     Button stopButton;
-
     @FXML
     Button resetButton;
-
     @FXML
     Button stepButton;
-
     @FXML
     Slider sizeSlider;
-
-//    @FXML
-//    Slider travelSlider;
-
     @FXML
     Slider sickTimeSlider;
-
     @FXML
     TextField stepCount;
-
     @FXML
     Slider socialDistancingSlider;
-
     @FXML
     Slider quarantineSlider;
-
     @FXML
     Slider maskSlider;
+    @FXML
+    Slider vaccinatedSlider;
+    @FXML
+    CheckBox enableQuarantine;
+    @FXML
+    TabPane tabPane;
 
+
+    //Standard simulation
     Simulation sim;
 
+    //Market Simulation
+    Simulation simMarket;
+
+    int simulationType;
+
+    //Used for graphs
     EnumMap<State, Rectangle> hrects = new EnumMap<State, Rectangle>(State.class);
 
+    //Quarantine time -> used in person class
     public static int quarantineTime;
 
+    //used for timing the simulation
     private Movement clock;
-
+    //Animation
     private class Movement extends AnimationTimer {
 
         private long FRAMES_PER_SEC = 50L;
@@ -101,6 +106,9 @@ public class SimulatorController {
         }
     }
 
+    /**
+     * Initializing the javafx tools
+     */
     @FXML
     public void initialize() {
 
@@ -110,12 +118,6 @@ public class SimulatorController {
                 setSize();
             }
         });
-//        travelSlider.valueProperty().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-//                //setLimit();
-//            }
-//        });
         sickTimeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
@@ -133,6 +135,7 @@ public class SimulatorController {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 setQuarantine();
+
             }
         });
         maskSlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -141,31 +144,60 @@ public class SimulatorController {
                 setMask();
             }
         });
-
-
+        vaccinatedSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                setVaccinated();
+            }
+        });
+        enableQuarantine.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                disableQuarantine();
+            }
+        });
+        //new instance of timer
         clock = new Movement();
         disableButtons(true, true, true);
 
-
+        disableQuarantine();
         world.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+        centralLocation.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
     }
 
     @FXML
     public void setup() {
         clock.stop();
         clock.resetTicks();
-        world.getChildren().clear();
+        //world.getChildren().clear();
         quarantine.getChildren().clear();
-        sim = new Simulation(100, world);
-        sim.draw();
 
+
+        switch (tabPane.getSelectionModel().getSelectedIndex()){
+            case 0:
+                world.getChildren().clear();
+                sim = new Simulation(100, world);
+                sim.setSimulationType(1);
+                sim.draw();
+                break;
+            case 1:
+                centralLocation.getChildren().clear();
+                centralLocation.getChildren().add(market);
+                centralLocation.getChildren().add(marketLabel);
+                simMarket = new Simulation(100, centralLocation);
+                simMarket.setSimulationType(2);
+                simMarket.draw();
+                break;
+            case 2:
+                break;
+        }
         setSize();
-        //setLimit();
         setSocialDistancingLimit();
         setSickTime();
         setMask();
+        setVaccinated();
         disableButtons(true, false, false);
-
+        disableQuarantine();
         histogram.getChildren().clear();
         timechart.getChildren().clear();
         int offset = 0;
@@ -179,26 +211,55 @@ public class SimulatorController {
         drawCharts();
     }
 
+
+
     public void setMask(){
+
         int temp = (int)(maskSlider.getValue());
-        sim.setMask(temp);
+        switch(tabPane.getSelectionModel().getSelectedIndex())
+        {
+            case 0:
+                sim.setMask(temp);
+                break;
+            case 1:
+                simMarket.setMask(temp);
+                break;
+            case 2:
+                break;
+
+        }
     }
 
     public void setSize() {
-        Person.radius = (int) (sizeSlider.getValue());
-        sim.draw();
+        switch(tabPane.getSelectionModel().getSelectedIndex())
+        {
+            case 0:
+                Person.radius = (int) (sizeSlider.getValue());
+                sim.draw();
+                break;
+            case 1:
+                Person.radius = (int) (sizeSlider.getValue());
+                simMarket.draw();
+                break;
+            case 2:
+                break;
+
+        }
     }
 
-//    public void setLimit() {
-//
-//        System.out.println((int)(travelSlider.getValue()));
-//        Position.limit = (int)(travelSlider.getValue());
-//    }
+    public void disableQuarantine(){
+        if(enableQuarantine.isSelected()){
+            quarantineSlider.setDisable(false);
+        }
+        else {
+            quarantineSlider.setDisable(true);
+        }
+    }
+
 
     public void setQuarantine(){
         quarantineTime = (int)(quarantineSlider.getValue());
     }
-
     public void setSocialDistancingLimit(){
         double temp = (double)(socialDistancingSlider.getValue());
         System.out.println(temp);
@@ -214,6 +275,23 @@ public class SimulatorController {
         Position.limit = (int) temp;
     }
 
+    public void setVaccinated(){
+        int temp = (int)(vaccinatedSlider.getValue());
+//        sim.vaccinatePeople(temp);
+
+        switch(tabPane.getSelectionModel().getSelectedIndex())
+        {
+            case 0:
+                sim.vaccinatePeople(temp);
+                break;
+            case 1:
+                simMarket.vaccinatePeople(temp);
+                break;
+            case 2:
+                break;
+
+        }
+    }
     public void setSickTime() {
         Person.healtime = 50 * (int)(sickTimeSlider.getValue());
     }
@@ -241,12 +319,60 @@ public class SimulatorController {
 
     @FXML
     public void step() {
-        sim.step();
+        switch(tabPane.getSelectionModel().getSelectedIndex())
+        {
+            case 0:
+                sim.step();
+                break;
+            case 1:
+                simMarket.step();
+                break;
+            case 2:
+                break;
+
+        }
     }
 
     public void drawCharts() {
+//        EnumMap<State, Integer> currentPop = new EnumMap<State, Integer>(State.class);
+//        for (Person p : sim.getPeople()) {
+//            if (!currentPop.containsKey(p.getState())) {
+//                currentPop.put(p.getState(), 0);
+//            }
+//            currentPop.put(p.getState(), 1 + currentPop.get(p.getState()));
+//        }
+//        for (State state : hrects.keySet()) {
+//            if (currentPop.containsKey(state)) {
+//                hrects.get(state).setHeight(currentPop.get(state));
+//                hrects.get(state).setTranslateY(30 + 100 - currentPop.get(state));
+//
+//                Circle c = new Circle(1, state.getColor());
+//                c.setTranslateX(clock.getTicks() / 5.0);
+//                c.setTranslateY(130 - currentPop.get(state));
+//                timechart.getChildren().add(c);
+//            }
+//        }
+//        if (!currentPop.containsKey(State.INFECTED)) {
+//            clock.stop();
+//            disableButtons(true, true, true);
+//        }
+        switch(tabPane.getSelectionModel().getSelectedIndex())
+        {
+            case 0:
+                drawChartDriver(sim);
+                break;
+            case 1:
+                drawChartDriver(simMarket);
+                break;
+            case 2:
+                break;
+
+        }
+    }
+
+    public void drawChartDriver(Simulation s){
         EnumMap<State, Integer> currentPop = new EnumMap<State, Integer>(State.class);
-        for (Person p : sim.getPeople()) {
+        for (Person p : s.getPeople()) {
             if (!currentPop.containsKey(p.getState())) {
                 currentPop.put(p.getState(), 0);
             }
@@ -270,7 +396,27 @@ public class SimulatorController {
     }
 
     public void moveQuarantine(){
-        sim.moveToQuarantine(quarantine);
+
+        if(enableQuarantine.isSelected()) {
+            switch(tabPane.getSelectionModel().getSelectedIndex())
+            {
+                case 0:
+                    sim.moveToQuarantine(quarantine);
+                    break;
+                case 1:
+                    simMarket.moveToQuarantine(quarantine);
+                    break;
+                case 2:
+                    break;
+
+            }
+        }
+
+
+
+
+
+
     }
 
 
