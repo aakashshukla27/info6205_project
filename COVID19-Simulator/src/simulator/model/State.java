@@ -13,13 +13,11 @@ public enum State {
         }
     }, RECOVERED {
         public Color getColor() {
-            return Color.GREEN;
+            return Color.DARKGRAY;
         }
-     },QUARANTINED{
-         public Color getColor() {
-            return Color.GRAY;
-        }
-     };
+    }, ASYMPTOMATIC{
+       public Color getColor(){return Color.YELLOW;}
+    };
 
     public abstract Color getColor();
 }

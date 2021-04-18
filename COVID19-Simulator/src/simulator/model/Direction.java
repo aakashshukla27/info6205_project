@@ -4,7 +4,7 @@ public class Direction {
 
     private double dx;
     private double dy;
-    public static final double SPEED = 2;
+    public double speed;
 
     public Direction(double dx, double dy) {
         this.dx = dx;
@@ -16,13 +16,20 @@ public class Direction {
         dx = Math.sin(dir);
         dy = Math.cos(dir);
     }
+     public Direction(double speed) {
+        this.speed = speed;
+        double dir = Math.random() * 2 * Math.PI;
+        dx = Math.sin(dir);
+        dy = Math.cos(dir);
+    }
+    
 
     public double getDX(){
-        return dx * SPEED;
+        return dx * speed;
     }
 
     public double getDY() {
-        return dy * SPEED;
+        return dy * speed;
     }
 
     public void bounceX() {

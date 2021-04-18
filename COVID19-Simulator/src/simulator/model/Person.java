@@ -3,6 +3,13 @@ package simulator.model;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import simulator.gui.SimulatorController;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 public class Person {
 
@@ -11,27 +18,77 @@ public class Person {
     private State state;
     private Position loc;
     private Direction heading;
-    private Pane pane;
+    private LocalDateTime timeStamp;
+    private int quarantineAfter = 10;
+    private double asymptomaticPercentage = 0.5;
+
+    public int getSimulationType() {
+        return simulationType;
+    }
+
+    public void setSimulationType(int simulationType) {
+        this.simulationType = simulationType;
+    }
+
+    private int simulationType;
+
+    public boolean isMask() {
+        return mask;
+    }
+
+    public void setMask(boolean mask) {
+        this.mask = mask;
+    }
+
+    private boolean mask;
+
+    public boolean isVaccinated() {
+        return vaccinated;
+    }
+
+    public void setVaccinated(boolean vaccinated) {
+        this.vaccinated = vaccinated;
+    }
+
+    private boolean vaccinated;
+    public Pane getPane() {
+        return pane;
+    }
+
+
+    public Pane pane;
     private Circle c;
-    private Pane quarantine;
 
     public static int healtime;
     private int sicktime = 0;
 
     private Position origin;
 
-    public Person(State state, Pane pane,Pane quarantine) {
+    public double getCommunityTravelFactor() {
+        return communityTravelFactor;
+    }
+
+    public void setCommunityTravelFactor(double communityTravelFactor) {
+        this.communityTravelFactor = communityTravelFactor;
+    }
+
+    private double communityTravelFactor;
+
+
+    Random rand = new Random();
+    public Person(State state, Pane pane) {
         this.state = state;
         loc = new Position(pane, radius);
-        heading = new Direction();
+        heading = new Direction(2);
         this.pane = pane;
-        this.quarantine = quarantine;
-        
         c = new Circle(radius, state.getColor());
         c.setStroke(Color.BLACK);
         pane.getChildren().add(c);
 
         origin = new Position(loc.getX(), loc.getY());
+        this.timeStamp = LocalDateTime.now();
+        quarantineAfter = SimulatorController.quarantineTime;
+        mask = false;
     }
 
     public State getState() {
@@ -41,7 +98,6 @@ public class Person {
     public void move() {
         loc.move(heading, pane, radius, origin);
     }
-     
 
     public void setState(State state) {
         this.state = state;
@@ -54,28 +110,87 @@ public class Person {
         c.setTranslateY(loc.getY());
     }
      public void undraw() {
-        
         c.setRadius(0);
         c.setTranslateX(0);
         c.setTranslateY(0);
-         
     }
+
+    public void checkInMarket(ArrayList<Person> ipList){
+        if(simulationType == 2){
+            boolean toTransmit = false;
+            for (Person person : ipList) {
+                if (person.isInMarket() && (person.getState() == State.INFECTED)) {
+                    toTransmit = true;
+                    break;
+                }
+            }
+            if(toTransmit && isInMarket()){
+                double random =Math.random();
+                if(mask && vaccinated){
+                    if(random < 0.06){
+                        setState(State.INFECTED);
+                        timeStamp = LocalDateTime.now();
+                    }
+                }
+                else if(!mask && vaccinated){
+                    if(random < 0.20){
+                        setState(State.INFECTED);
+                        timeStamp = LocalDateTime.now();
+                    }
+                }
+                else if(!mask){
+                    setState(State.INFECTED);
+                    timeStamp = LocalDateTime.now();
+                }
+            }
+
+
+        }
+    }
+
+    private boolean isInMarket(){
+        double x1, x2, y1, y2;
+        x1 = 209;
+        x2 = 309;
+        y1 = 244;
+        y2 = 337;
+        double currentX = loc.getX();
+        double currentY = loc.getY();
+        if((x1 <= currentX)&&(currentX <= x2)&&(y1 <=currentY)&&(currentY <= y2)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
 
     public boolean collide(Person other) {
         if (this.loc.distance(other.loc) < 2 * radius) {
-            if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
-                setState(State.QUARANTINED);
-                 this.state = State.QUARANTINED;
-        this.loc = new Position(quarantine, radius);
-        this.heading = new Direction();
-        this.pane=quarantine;
-        undraw();
-        c = new Circle(radius, state.getColor());
-        c.setStroke(Color.BLACK);
-        this.pane.getChildren().add(c);
 
-        origin = new Position(loc.getX(), loc.getY());
-               
+            double random =Math.random();
+            if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
+                if(mask && vaccinated){
+
+                    if(random < 0.06){
+
+                        setState(State.INFECTED);
+                        this.timeStamp = LocalDateTime.now();
+                    }
+                }
+                else if(!mask && vaccinated){
+
+                    if(random < 0.20){
+
+                        setState(State.INFECTED);
+                        this.timeStamp = LocalDateTime.now();
+                    }
+                }
+                else if(!mask){
+                    setState(State.INFECTED);
+                    this.timeStamp = LocalDateTime.now();
+                }
+
             }
             return true;
         }
@@ -85,77 +200,53 @@ public class Person {
     public void getBetter() {
         if (state == State.INFECTED) {
             sicktime++;
+
             if (sicktime > healtime) {
                 setState(State.RECOVERED);
                 sicktime = 0;
             }
         }
     }
-    
 
-    public Pane getPane() {
-        return pane;
+    public void moveQuarantine(Pane pane){
+        LocalDateTime now = LocalDateTime.now();
+
+        if(ChronoUnit.SECONDS.between(this.timeStamp, now) == quarantineAfter){
+            if(this.state == State.INFECTED){
+
+                this.undraw();
+                this.pane = pane;
+                loc = new Position(pane, radius);
+                heading = new Direction(2);
+
+                c = new Circle(radius, state.getColor());
+                c.setStroke(Color.BLACK);
+                pane.getChildren().add(c);
+
+                origin = new Position(loc.getX(), loc.getY());
+                //this.draw();
+            }
+        }
     }
 
-    public void setPane(Pane pane) {
-        this.pane = pane;
+    public void moveToNewCommunity(Pane pane){
+        Random rand = new Random();
+        double temp = rand.nextDouble();
+        if(communityTravelFactor > temp){
+            this.undraw();
+            this.pane = pane;
+            loc = new Position(pane, radius);
+            heading = new Direction(2);
+
+            c = new Circle(radius, state.getColor());
+            c.setStroke(Color.BLACK);
+            pane.getChildren().add(c);
+
+            origin = new Position(loc.getX(), loc.getY());
+        }
+
+
+
     }
 
-    public static int getRadius() {
-        return radius;
-    }
-
-    public static void setRadius(int radius) {
-        Person.radius = radius;
-    }
-
-    public Position getLoc() {
-        return loc;
-    }
-
-    public void setLoc(Position loc) {
-        this.loc = loc;
-    }
-
-    public Direction getHeading() {
-        return heading;
-    }
-
-    public void setHeading(Direction heading) {
-        this.heading = heading;
-    }
-
-    public Circle getC() {
-        return c;
-    }
-
-    public void setC(Circle c) {
-        this.c = c;
-    }
-
-    public static int getHealtime() {
-        return healtime;
-    }
-
-    public static void setHealtime(int healtime) {
-        Person.healtime = healtime;
-    }
-
-    public int getSicktime() {
-        return sicktime;
-    }
-
-    public void setSicktime(int sicktime) {
-        this.sicktime = sicktime;
-    }
-
-    public Position getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(Position origin) {
-        this.origin = origin;
-    }
-
-    
 }
