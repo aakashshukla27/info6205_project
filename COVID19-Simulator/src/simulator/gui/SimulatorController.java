@@ -14,9 +14,18 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.EnumMap;
+import java.util.Random;
 
 public class SimulatorController {
 
+    @FXML
+    Pane community1;
+    @FXML
+    Pane community2;
+    @FXML
+    Pane community3;
+    @FXML
+    Pane community4;
     @FXML
     Label marketLabel;
     @FXML
@@ -57,13 +66,21 @@ public class SimulatorController {
     CheckBox enableQuarantine;
     @FXML
     TabPane tabPane;
-
+    @FXML
+    Slider communityTravelSlider;
 
     //Standard simulation
     Simulation sim;
 
     //Market Simulation
     Simulation simMarket;
+
+
+    //Community Simulation
+    Simulation simCommunity1;
+    Simulation simCommunity2;
+    Simulation simCommunity3;
+    Simulation simCommunity4;
 
     int simulationType;
 
@@ -93,6 +110,7 @@ public class SimulatorController {
                 ticks++;
                 stepCount.setText("" + ticks);
                 moveQuarantine();
+                moveToNewCommunity();
             }
         }
 
@@ -156,6 +174,12 @@ public class SimulatorController {
                 disableQuarantine();
             }
         });
+        communityTravelSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                moveToNewCommunity();
+            }
+        });
         //new instance of timer
         clock = new Movement();
         disableButtons(true, true, true);
@@ -189,6 +213,19 @@ public class SimulatorController {
                 simMarket.draw();
                 break;
             case 2:
+                community1.getChildren().clear();
+                community2.getChildren().clear();
+                community3.getChildren().clear();
+                community4.getChildren().clear();
+
+                simCommunity1 = new Simulation(5, community1);
+                simCommunity1.draw();
+                simCommunity2 = new Simulation(5, community2);
+                simCommunity2.draw();
+                simCommunity3 = new Simulation(5, community3);
+                simCommunity3.draw();
+                simCommunity4 = new Simulation(5, community4);
+                simCommunity4.draw();
                 break;
         }
         setSize();
@@ -225,6 +262,10 @@ public class SimulatorController {
                 simMarket.setMask(temp);
                 break;
             case 2:
+                simCommunity1.setMask(temp);
+                simCommunity2.setMask(temp);
+                simCommunity3.setMask(temp);
+                simCommunity4.setMask(temp);
                 break;
 
         }
@@ -242,6 +283,11 @@ public class SimulatorController {
                 simMarket.draw();
                 break;
             case 2:
+                Person.radius = (int) (sizeSlider.getValue());
+                simCommunity1.draw();
+                simCommunity2.draw();
+                simCommunity3.draw();
+                simCommunity4.draw();
                 break;
 
         }
@@ -288,6 +334,10 @@ public class SimulatorController {
                 simMarket.vaccinatePeople(temp);
                 break;
             case 2:
+                simCommunity1.vaccinatePeople(temp);
+                simCommunity2.vaccinatePeople(temp);
+                simCommunity3.vaccinatePeople(temp);
+                simCommunity4.vaccinatePeople(temp);
                 break;
 
         }
@@ -328,34 +378,17 @@ public class SimulatorController {
                 simMarket.step();
                 break;
             case 2:
+                simCommunity1.step();
+                simCommunity2.step();
+                simCommunity3.step();
+                simCommunity4.step();
                 break;
 
         }
     }
 
     public void drawCharts() {
-//        EnumMap<State, Integer> currentPop = new EnumMap<State, Integer>(State.class);
-//        for (Person p : sim.getPeople()) {
-//            if (!currentPop.containsKey(p.getState())) {
-//                currentPop.put(p.getState(), 0);
-//            }
-//            currentPop.put(p.getState(), 1 + currentPop.get(p.getState()));
-//        }
-//        for (State state : hrects.keySet()) {
-//            if (currentPop.containsKey(state)) {
-//                hrects.get(state).setHeight(currentPop.get(state));
-//                hrects.get(state).setTranslateY(30 + 100 - currentPop.get(state));
-//
-//                Circle c = new Circle(1, state.getColor());
-//                c.setTranslateX(clock.getTicks() / 5.0);
-//                c.setTranslateY(130 - currentPop.get(state));
-//                timechart.getChildren().add(c);
-//            }
-//        }
-//        if (!currentPop.containsKey(State.INFECTED)) {
-//            clock.stop();
-//            disableButtons(true, true, true);
-//        }
+
         switch(tabPane.getSelectionModel().getSelectedIndex())
         {
             case 0:
@@ -365,6 +398,7 @@ public class SimulatorController {
                 drawChartDriver(simMarket);
                 break;
             case 2:
+                //drawChartDriver();
                 break;
 
         }
@@ -396,7 +430,6 @@ public class SimulatorController {
     }
 
     public void moveQuarantine(){
-
         if(enableQuarantine.isSelected()) {
             switch(tabPane.getSelectionModel().getSelectedIndex())
             {
@@ -407,17 +440,30 @@ public class SimulatorController {
                     simMarket.moveToQuarantine(quarantine);
                     break;
                 case 2:
+                    simCommunity1.moveToQuarantine(quarantine);
+                    simCommunity2.moveToQuarantine(quarantine);
+                    simCommunity3.moveToQuarantine(quarantine);
+                    simCommunity4.moveToQuarantine(quarantine);
                     break;
 
             }
         }
-
-
-
-
-
-
     }
+
+    public void moveToNewCommunity(){
+        //Random rand = new Random();
+        switch(tabPane.getSelectionModel().getSelectedIndex()){
+            case 2:
+                int temp = (int) communityTravelSlider.getValue();
+                //int random = rand.nextInt(4);
+                simCommunity1.moveToNewCommunity(community2, temp);
+                simCommunity2.moveToNewCommunity(community3, temp);
+                simCommunity3.moveToNewCommunity(community4, temp);
+                simCommunity4.moveToNewCommunity(community1, temp);
+                break;
+        }
+    }
+
 
 
 }

@@ -245,7 +245,13 @@
 
             <content>
 
-              <AnchorPane fx:id="communities" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane fx:id="communities" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Pane fx:id="community1" layoutX="61.0" layoutY="43.0" prefHeight="151.0" prefWidth="153.0" style="-fx-border-color: white;" />
+                        <Pane fx:id="community2" layoutX="291.0" layoutY="43.0" prefHeight="151.0" prefWidth="153.0" style="-fx-border-color: white;" />
+                        <Pane fx:id="community3" layoutX="61.0" layoutY="297.0" prefHeight="151.0" prefWidth="153.0" style="-fx-border-color: white;" />
+                        <Pane fx:id="community4" layoutX="291.0" layoutY="297.0" prefHeight="151.0" prefWidth="153.0" style="-fx-border-color: white;" />
+                     </children></AnchorPane>
 
             </content>
 

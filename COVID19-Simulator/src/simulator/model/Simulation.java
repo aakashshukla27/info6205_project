@@ -73,6 +73,13 @@ public class Simulation {
         }
     }
 
+    public void moveToNewCommunity(Pane pane, int chance){
+        for(Person p: people){
+            p.setCommunityTravelFactor(chance);
+            p.moveToNewCommunity(pane);
+        }
+    }
+
     public void setMask(int masked){
         if(people.size()>0){
             for(Person p: people){

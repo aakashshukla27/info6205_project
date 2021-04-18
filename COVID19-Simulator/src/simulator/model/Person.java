@@ -63,6 +63,18 @@ public class Person {
     private int sicktime = 0;
 
     private Position origin;
+
+    public double getCommunityTravelFactor() {
+        return communityTravelFactor;
+    }
+
+    public void setCommunityTravelFactor(double communityTravelFactor) {
+        this.communityTravelFactor = communityTravelFactor;
+    }
+
+    private double communityTravelFactor;
+
+
     Random rand = new Random();
     public Person(State state, Pane pane) {
         this.state = state;
@@ -174,9 +186,6 @@ public class Person {
                         this.timeStamp = LocalDateTime.now();
                     }
                 }
-
-
-
                 else if(!mask){
                     setState(State.INFECTED);
                     this.timeStamp = LocalDateTime.now();
@@ -217,8 +226,27 @@ public class Person {
                 origin = new Position(loc.getX(), loc.getY());
                 //this.draw();
             }
+        }
+    }
 
+    public void moveToNewCommunity(Pane pane){
+        Random rand = new Random();
+        double temp = rand.nextDouble();
+        if(communityTravelFactor > temp){
+            this.undraw();
+            this.pane = pane;
+            loc = new Position(pane, radius);
+            heading = new Direction(2);
+
+            c = new Circle(radius, state.getColor());
+            c.setStroke(Color.BLACK);
+            pane.getChildren().add(c);
+
+            origin = new Position(loc.getX(), loc.getY());
         }
 
+
+
     }
+
 }
