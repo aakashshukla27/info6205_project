@@ -230,7 +230,7 @@ public class Person {
     }
 
     public void moveToNewCommunity(Pane pane){
-        Random rand = new Random();
+        
         double temp = rand.nextDouble();
         if(communityTravelFactor > temp){
             this.undraw();

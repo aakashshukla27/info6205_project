@@ -177,7 +177,7 @@ public class SimulatorController {
         communityTravelSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                moveToNewCommunity();
+                setNewCommunity();
             }
         });
         //new instance of timer
@@ -217,14 +217,13 @@ public class SimulatorController {
                 community2.getChildren().clear();
                 community3.getChildren().clear();
                 community4.getChildren().clear();
-
                 simCommunity1 = new Simulation(5, community1);
                 simCommunity1.draw();
-                simCommunity2 = new Simulation(5, community2);
+                simCommunity2 = new Simulation(10, community2);
                 simCommunity2.draw();
                 simCommunity3 = new Simulation(5, community3);
                 simCommunity3.draw();
-                simCommunity4 = new Simulation(5, community4);
+                simCommunity4 = new Simulation(15, community4);
                 simCommunity4.draw();
                 break;
         }
@@ -233,6 +232,8 @@ public class SimulatorController {
         setSickTime();
         setMask();
         setVaccinated();
+        setNewCommunity();
+       
         disableButtons(true, false, false);
         disableQuarantine();
         histogram.getChildren().clear();
@@ -305,6 +306,13 @@ public class SimulatorController {
 
     public void setQuarantine(){
         quarantineTime = (int)(quarantineSlider.getValue());
+    }
+     public void setNewCommunity(){
+       // Person.setCommunityTravelFactor((double)(communityTravelSlider.getValue()));
+          simCommunity1.setMoveNewCommunity((double)(communityTravelSlider.getValue()));
+          simCommunity2.setMoveNewCommunity((double)(communityTravelSlider.getValue()));
+          simCommunity3.setMoveNewCommunity((double)(communityTravelSlider.getValue()));
+          simCommunity4.setMoveNewCommunity((double)(communityTravelSlider.getValue()));
     }
     public void setSocialDistancingLimit(){
         double temp = (double)(socialDistancingSlider.getValue());
@@ -454,12 +462,12 @@ public class SimulatorController {
         //Random rand = new Random();
         switch(tabPane.getSelectionModel().getSelectedIndex()){
             case 2:
-                int temp = (int) communityTravelSlider.getValue();
+                //int temp = (int) communityTravelSlider.getValue();
                 //int random = rand.nextInt(4);
-                simCommunity1.moveToNewCommunity(community2, temp);
-                simCommunity2.moveToNewCommunity(community3, temp);
-                simCommunity3.moveToNewCommunity(community4, temp);
-                simCommunity4.moveToNewCommunity(community1, temp);
+                simCommunity1.moveToNewCommunity(community2);
+                simCommunity2.moveToNewCommunity(community3);
+                simCommunity3.moveToNewCommunity(community4);
+                simCommunity4.moveToNewCommunity(community1);
                 break;
         }
     }

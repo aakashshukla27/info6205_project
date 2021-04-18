@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Simulation {
 
-    public static ArrayList<Person> people;
+    public ArrayList<Person> people;
 
     public Simulation(int popCount, Pane world) {
         people = new ArrayList<Person>();
@@ -73,9 +73,9 @@ public class Simulation {
         }
     }
 
-    public void moveToNewCommunity(Pane pane, int chance){
+    public void moveToNewCommunity(Pane pane){
         for(Person p: people){
-            p.setCommunityTravelFactor(chance);
+           // p.setCommunityTravelFactor(chance);
             p.moveToNewCommunity(pane);
         }
     }
@@ -107,6 +107,12 @@ public class Simulation {
     public void setSimulationType(int type){
         for(Person p: people){
             p.setSimulationType(type);
+        }
+    }
+    
+     public void setMoveNewCommunity(double factor){
+        for(Person p: people){
+            p.setCommunityTravelFactor(factor);
         }
     }
 }
