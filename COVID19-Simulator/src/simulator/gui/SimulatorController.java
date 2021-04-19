@@ -1,6 +1,6 @@
 package simulator.gui;
 
-import javafx.collections.ObservableList;
+
 import javafx.scene.control.*;
 import org.ini4j.Ini;
 import simulator.model.*;
@@ -14,16 +14,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SimulatorController {
 
@@ -94,10 +88,6 @@ public class SimulatorController {
     Simulation simCommunity4;
 
     int simulationType;
-
-
-
-
     //Used for graphs
     EnumMap<State, Rectangle> hrects = new EnumMap<State, Rectangle>(State.class);
 
@@ -268,6 +258,7 @@ public class SimulatorController {
         setMask();
         setVaccinated();
         setSimulationMask();
+        setSimulationVaccine();
        
         disableButtons(true, false, false);
         disableQuarantine();
@@ -284,6 +275,31 @@ public class SimulatorController {
         drawCharts();
     }
 
+    /**
+     * set vaccination rate in simulation
+     */
+    public void setSimulationVaccine(){
+        int temp = (int)(vaccinatedSlider.getValue());
+        switch(tabPane.getSelectionModel().getSelectedIndex())
+        {
+            case 0:
+                sim.setSimulationVaccinated(temp);
+                break;
+            case 1:
+                simMarket.setSimulationVaccinated(temp);
+                break;
+            case 2:
+                simCommunity1.setSimulationVaccinated(temp);
+                simCommunity2.setSimulationVaccinated(temp);
+                simCommunity3.setSimulationVaccinated(temp);
+                simCommunity4.setSimulationVaccinated(temp);
+                break;
+        }
+    }
+
+    /**
+     * set percentage of people wearing masks in simulation
+     */
     public void setSimulationMask(){
         int temp = (int)(maskSlider.getValue());
         switch(tabPane.getSelectionModel().getSelectedIndex())
@@ -304,7 +320,9 @@ public class SimulatorController {
         }
     }
 
-
+    /**
+     * set mask to person in simulator class
+     */
     public void setMask(){
 
         int temp = (int)(maskSlider.getValue());
@@ -326,6 +344,9 @@ public class SimulatorController {
         }
     }
 
+    /**
+     * set size of people in simulation
+     */
     public void setSize() {
         switch(tabPane.getSelectionModel().getSelectedIndex())
         {
@@ -348,6 +369,9 @@ public class SimulatorController {
         }
     }
 
+    /**
+     * toggling between quarantine zone
+     */
     public void disableQuarantine(){
         if(enableQuarantine.isSelected()){
             quarantineSlider.setDisable(false);
@@ -357,15 +381,20 @@ public class SimulatorController {
         }
     }
 
-
+    /**
+     * set quarantine after how many days
+     */
     public void setQuarantine(){
         quarantineTime = (int)(quarantineSlider.getValue());
     }
+
+    /**
+     * move to new community - only applicable to category 3
+     */
     public void setNewCommunity(){
 
         switch(tabPane.getSelectionModel().getSelectedIndex()) {
             case 2:
-
                 simCommunity1.setMoveNewCommunity((double) (communityTravelSlider.getValue()));
                 simCommunity2.setMoveNewCommunity((double) (communityTravelSlider.getValue()));
                 simCommunity3.setMoveNewCommunity((double) (communityTravelSlider.getValue()));
@@ -373,25 +402,28 @@ public class SimulatorController {
                 break;
         }
     }
+
+    /**
+     * set degree of social distancing
+     */
     public void setSocialDistancingLimit(){
         double temp = (double)(socialDistancingSlider.getValue());
         System.out.println(temp);
         if(temp == 0){
             temp = 0.01;
         }
-        if(temp == 1){
 
-        }
         temp = 1 - temp;
         temp *= 200;
 
         Position.limit = (int) temp;
     }
 
+    /**
+     * set vaccinated percentage
+     */
     public void setVaccinated(){
         int temp = (int)(vaccinatedSlider.getValue());
-
-
         switch(tabPane.getSelectionModel().getSelectedIndex())
         {
             case 0:
@@ -409,11 +441,20 @@ public class SimulatorController {
 
         }
     }
+
+    /**
+     * set time to recovery of a person
+     */
     public void setSickTime() {
-        Person.healtime = 50 * (int)(sickTimeSlider.getValue());
+        Person.healTime = 50 * (int)(sickTimeSlider.getValue());
     }
 
-
+    /**
+     *
+     * @param stop stop sim
+     * @param step take 1 step in sim
+     * @param start start sim
+     */
     public void disableButtons(boolean stop, boolean step, boolean start) {
         stopButton.setDisable(stop);
         stepButton.setDisable(step);
@@ -454,6 +495,9 @@ public class SimulatorController {
         }
     }
 
+    /**
+     * draw charts
+     */
     public void drawCharts() {
 
         switch(tabPane.getSelectionModel().getSelectedIndex())
@@ -471,6 +515,10 @@ public class SimulatorController {
         }
     }
 
+    /**
+     * draw charts for selected simulation type
+     * @param s simulation type
+     */
     public void drawChartDriver(Simulation s){
         EnumMap<State, Integer> currentPop = new EnumMap<State, Integer>(State.class);
         for (Person p : s.getPeople()) {
@@ -496,6 +544,9 @@ public class SimulatorController {
         }
     }
 
+    /**
+     * move people to quarantine once it is enabled
+     */
     public void moveQuarantine(){
         if(enableQuarantine.isSelected()) {
             switch(tabPane.getSelectionModel().getSelectedIndex())
@@ -517,6 +568,9 @@ public class SimulatorController {
         }
     }
 
+    /**
+     * move to new community - in simulation 2
+     */
     public void moveToNewCommunity(){
         switch(tabPane.getSelectionModel().getSelectedIndex()){
             case 2:
@@ -528,12 +582,12 @@ public class SimulatorController {
         }
     }
 
+    /**
+     *
+     * @return r factor of selected disease
+     */
     public String setRFactor(){
-//            if((String) selectedDisease.getValue() == ""){
-//                return "Covid19";
-//            }
             return (String) selectedDisease.getValue();
-
     }
 
 

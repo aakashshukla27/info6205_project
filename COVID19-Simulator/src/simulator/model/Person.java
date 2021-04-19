@@ -8,13 +8,11 @@ import simulator.gui.SimulatorController;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Random;
 
 public class Person {
 
     public static int radius;
-
     private State state;
     private Position loc;
     private Direction heading;
@@ -24,18 +22,30 @@ public class Person {
     private int othersInfected = 0;
     private double maxRange;
 
+    /**
+     *
+     * @param simulationType set simulation type - used for case 2 simulation
+     */
     public void setSimulationType(int simulationType) {
         this.simulationType = simulationType;
     }
 
     private int simulationType;
 
+    /**
+     *
+     * @param mask set mask on a person
+     */
     public void setMask(boolean mask) {
         this.mask = mask;
     }
 
     private boolean mask;
 
+    /**
+     * set person vaccinated
+     * @param vaccinated set person vaccinated
+     */
     public void setVaccinated(boolean vaccinated) {
         this.vaccinated = vaccinated;
     }
@@ -46,15 +56,23 @@ public class Person {
 
     private Circle c;
 
-    public static int healtime;
-    private int sicktime = 0;
+    public static int healTime;
+    private int sickTime = 0;
 
     private Position origin;
 
+    /**
+     * get community travel factor - higher value means more chance to travel between communities
+     * @return
+     */
     public double getCommunityTravelFactor() {
         return communityTravelFactor;
     }
 
+    /**
+     *
+     * @param communityTravelFactor setter for above mentioned function
+     */
     public void setCommunityTravelFactor(double communityTravelFactor) {
         this.communityTravelFactor = communityTravelFactor;
     }
@@ -63,7 +81,13 @@ public class Person {
 
 
     final Random rand = new Random();
-    public Person(State state, Pane pane,double maxRange) {
+
+    /**
+     * Constructor for person class
+     * @param state - from State enumeration
+     * @param pane - frame
+     */
+    public Person(State state, Pane pane) {
         this.state = state;
         loc = new Position(pane, radius);
         this.maxRange = 1;
@@ -79,34 +103,58 @@ public class Person {
         mask = false;
     }
 
+    /**
+     * get current state
+     * @return
+     */
     public State getState() {
         return state;
     }
 
+    /**
+     * move person in pane
+     */
     public void move() {
         loc.move(heading, pane, radius, origin);
     }
 
+    /**
+     *
+     * @param state set new state
+     */
     public void setState(State state) {
         this.state = state;
         c.setFill((state.getColor()));
     }
 
-
-
-
+    /**
+     * draw simulation
+     */
     public void draw() {
         c.setRadius(radius);
         c.setTranslateX(loc.getX());
         c.setTranslateY(loc.getY());
     }
-     public void undraw() {
+
+    /**
+     * clear simulation
+     */
+    public void undraw() {
         c.setRadius(0);
         c.setTranslateX(0);
         c.setTranslateY(0);
     }
 
-    public void checkInMarket(ArrayList<Person> ipList,int maskedPercentage, double RFactor, double maskEffectiveness){
+    /**
+     *
+     * @param ipList list of people
+     * @param maskedPercentage percentage wearing masks
+     * @param vaccinatedPercentage percentage vaccinated
+     * @param RFactor - r factor
+     * @param maskEffectiveness - mask effectiveness
+     * @param vaccineEfficacy - efficacy
+     */
+    public void checkInMarket(ArrayList<Person> ipList,int maskedPercentage, int vaccinatedPercentage, double RFactor, double maskEffectiveness, double vaccineEfficacy){
         if(simulationType == 2){
             boolean toTransmit = false;
             Person temp=null;
@@ -124,30 +172,13 @@ public class Person {
                this.timeStamp = LocalDateTime.now();
                temp.othersInfected++;
             }
-//            if(toTransmit && isInMarket()){
-//                double random = (maxRange) * rand.nextDouble();
-//                if(mask && vaccinated){
-//                    if(random < 0.06){
-//                        setState(State.INFECTED);
-//                        timeStamp = LocalDateTime.now();
-//                    }
-//                }
-//                else if(!mask && vaccinated){
-//                    if(random < 0.20){
-//                        setState(State.INFECTED);
-//                        timeStamp = LocalDateTime.now();
-//                    }
-//                }
-//                else if(!mask){
-//                    setState(State.INFECTED);
-//                    timeStamp = LocalDateTime.now();
-//                }
-//            }
-
-
         }
     }
 
+    /**
+     *
+     * @return check if in market
+     */
     private boolean isInMarket(){
         double x1, x2, y1, y2;
         x1 = 209;
@@ -164,14 +195,22 @@ public class Person {
         }
     }
 
-
-    public void collide(Person other, int maskedPercentage, double RFactor, double maskEffectiveness) {
+    /**
+     *
+     * @param other other person
+     * @param maskedPercentage - percentage masked
+     * @param vaccinatedPercentage - percentage vaccinated
+     * @param RFactor - r factor
+     * @param maskEffectiveness - effectiveness of masks
+     * @param vaccineEfficacy - efficacy of vaccine
+     */
+    public void collide(Person other, int maskedPercentage, int vaccinatedPercentage, double RFactor, double maskEffectiveness, double vaccineEfficacy) {
         if (this.loc.distance(other.loc) < 2 * radius) {
-
-
             if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
 
-                double effectiveR0 = RFactor * (double)(1 - (((double)maskedPercentage / 100) * (double)maskEffectiveness));
+                double effectiveR0 = RFactor * (double)(1 - (((double)maskedPercentage / 100) * (double)maskEffectiveness)
+                 - (((double)vaccinatedPercentage / 100) * (double)vaccineEfficacy)
+                );
 
                 if (other.othersInfected < Math.ceil(effectiveR0)) {
                     setState(State.INFECTED);
@@ -179,59 +218,41 @@ public class Person {
                     other.othersInfected++;
                 }
             }
-
-//            double random = Math.random();
-//            if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
-//                if(mask && vaccinated){
-//
-//                    if(random < 0.06){
-//
-//                        setState(State.INFECTED);
-//                        this.timeStamp = LocalDateTime.now();
-//                    }
-//                }
-//                else if(!mask && vaccinated){
-//
-//                    if(random < 0.20){
-//
-//                        setState(State.INFECTED);
-//                        this.timeStamp = LocalDateTime.now();
-//                    }
-//                }
-//                else if(!mask){
-//                    setState(State.INFECTED);
-//                    this.timeStamp = LocalDateTime.now();
-//                }
-//
-//            }
         }
-
     }
 
+    /**
+     * reduce virus incubation period
+     */
     public void getBetter() {
         if (state == State.INFECTED) {
-            sicktime++;
+            sickTime++;
 
-            if (sicktime > healtime) {
+            if (sickTime > healTime) {
                 setState(State.RECOVERED);
-                sicktime = 0;
+                sickTime = 0;
             }
         }
     }
 
+    /**
+     *
+     * @param pane move to quarantine pane
+     */
     public void moveQuarantine(Pane pane){
         LocalDateTime now = LocalDateTime.now();
 
         if(ChronoUnit.SECONDS.between(this.timeStamp, now) == quarantineAfter){
             if(this.state == State.INFECTED){
-
-
-
                 this.moveQuarantineDriver(pane);
             }
         }
     }
 
+    /**
+     *
+     * @param pane driver to move to different pane
+     */
     public void moveQuarantineDriver(Pane pane){
         this.undraw();
         this.pane = pane;
@@ -245,6 +266,10 @@ public class Person {
         origin = new Position(loc.getX(), loc.getY());
     }
 
+    /**
+     *
+     * @param pane move to different community
+     */
     public void moveToNewCommunity(Pane pane){
         
         double temp = rand.nextDouble();
@@ -262,18 +287,34 @@ public class Person {
         }
     }
 
+    /**
+     *
+     * @return current location
+     */
     public Position getLoc() {
         return loc;
     }
 
+    /**
+     *
+     * @param loc set location
+     */
     public void setLoc(Position loc) {
         this.loc = loc;
     }
 
+    /**
+     *
+     * @return people infected by current person
+     */
     public int getOthersInfected() {
         return othersInfected;
     }
 
+    /**
+     *
+     * @param othersInfected update others infected by this person
+     */
     public void setOthersInfected(int othersInfected) {
         this.othersInfected = othersInfected;
     }
