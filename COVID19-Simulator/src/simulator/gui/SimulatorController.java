@@ -238,6 +238,7 @@ public class SimulatorController {
                 centralLocation.getChildren().add(marketLabel);
                 simMarket = new Simulation(100, centralLocation, random.nextDouble());
                 simMarket.setSimulationType(2);
+                simMarket.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simMarket.draw();
                 break;
             case 2:
@@ -246,12 +247,17 @@ public class SimulatorController {
                 community3.getChildren().clear();
                 community4.getChildren().clear();
                 simCommunity1 = new Simulation(5, community1, random.nextDouble());
+                simCommunity1.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simCommunity1.draw();
+
                 simCommunity2 = new Simulation(10, community2, random.nextDouble());
+                simCommunity2.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simCommunity2.draw();
                 simCommunity3 = new Simulation(5, community3, random.nextDouble());
+                simCommunity3.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simCommunity3.draw();
                 simCommunity4 = new Simulation(15, community4, random.nextDouble());
+                simCommunity4.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simCommunity4.draw();
                 setNewCommunity();
                 break;
