@@ -59,7 +59,7 @@ public class Person {
     }
 
     private double communityTravelFactor;
-    //private double randomNumber =
+
 
     final Random rand = new Random();
     public Person(State state, Pane pane) {
@@ -155,13 +155,13 @@ public class Person {
     }
 
 
-    public void collide(Person other, int maskedPercentage) {
+    public void collide(Person other, int maskedPercentage, double RFactor, double maskEffectiveness) {
         if (this.loc.distance(other.loc) < 2 * radius) {
 
 
             if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
 
-                double effectiveR0 = 3 * (double)(1 - ((maskedPercentage / 100) * 0.95));
+                double effectiveR0 = RFactor * (double)(1 - ((maskedPercentage / 100) * maskEffectiveness));
 
                 if (other.othersInfected < Math.ceil(effectiveR0)) {
                     setState(State.INFECTED);
@@ -211,9 +211,6 @@ public class Person {
 
     public void moveQuarantine(Pane pane){
         LocalDateTime now = LocalDateTime.now();
-        if(this.othersInfected == 3){
-            this.moveQuarantineDriver(pane);
-        }
 
         if(ChronoUnit.SECONDS.between(this.timeStamp, now) == quarantineAfter){
             if(this.state == State.INFECTED){

@@ -1,9 +1,14 @@
 package simulator.model;
 
 import javafx.scene.layout.Pane;
+import org.ini4j.Ini;
 import simulator.gui.SimulatorController;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Simulation {
 
@@ -11,11 +16,13 @@ public class Simulation {
 
     private static int maskedPercentage;
 
+
+
+
     public Simulation(int popCount, Pane world, double value) {
         people = new ArrayList<Person>();
         for (int i = 0; i < popCount; i++) {
             Person p = new Person(State.SUSCEPTIBLE, world);
-
             people.add(p);
         }
 
@@ -41,7 +48,7 @@ public class Simulation {
     public void collisionCheck() {
         for (Person p : people) {
             for (Person q : people) {
-                p.collide(q, maskedPercentage);
+                p.collide(q, maskedPercentage, RFactor, (SimulatorController.aRead.get("section", "MaskEffectiveness", double.class)));
             }
         }
     }
@@ -123,4 +130,20 @@ public class Simulation {
             p.setCommunityTravelFactor(factor);
         }
     }
+
+    public double getRFactor() {
+        return RFactor;
+    }
+
+
+    public void setRFactor(String ip){
+
+        double val= SimulatorController.aRead.get("section", ip, double.class);
+        this.RFactor = val;
+    }
+
+    private double RFactor;
+
+
+
 }

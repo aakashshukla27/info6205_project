@@ -2,6 +2,7 @@ package simulator.gui;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import org.ini4j.Ini;
 import simulator.model.*;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
@@ -14,10 +15,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SimulatorController {
 
@@ -102,6 +108,8 @@ public class SimulatorController {
     public static Random random = new Random();
     //used for timing the simulation
     private Movement clock;
+
+    public static Ini aRead;
     //Animation
     private class Movement extends AnimationTimer {
 
@@ -138,7 +146,9 @@ public class SimulatorController {
      * Initializing the javafx tools
      */
     @FXML
-    public void initialize() {
+    public void initialize() throws IOException {
+        aRead = new Ini();
+        aRead.load(new FileReader("src/simulator/gui/setting.ini"));
 
         sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -191,6 +201,12 @@ public class SimulatorController {
                 setNewCommunity();
             }
         });
+        selectedDisease.valueProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observableValue, Object o, Object t1) {
+                setRFactor();
+            }
+        });
         //new instance of timer
         clock = new Movement();
         disableButtons(true, true, true);
@@ -204,26 +220,23 @@ public class SimulatorController {
     public void setup() {
         clock.stop();
         clock.resetTicks();
-        //world.getChildren().clear();
         quarantine.getChildren().clear();
-        selectedDisease.getItems().add(1, "Covid 19");
-        selectedDisease.getItems().add(2, "MERS");
-//        List<String> diseases = Arrays.asList(new String[]{"Covid 19", "MERS"});
-//        selectedDisease.setItems((ObservableList) diseases);
-        random.setSeed(1);
+
+
         switch (tabPane.getSelectionModel().getSelectedIndex()){
             case 0:
                 world.getChildren().clear();
                 sim = new Simulation(100, world, random.nextDouble());
                 sim.setSimulationType(1);
+                sim.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 sim.draw();
+
                 break;
             case 1:
                 centralLocation.getChildren().clear();
                 centralLocation.getChildren().add(market);
                 centralLocation.getChildren().add(marketLabel);
                 simMarket = new Simulation(100, centralLocation, random.nextDouble());
-
                 simMarket.setSimulationType(2);
                 simMarket.draw();
                 break;
@@ -371,7 +384,7 @@ public class SimulatorController {
 
     public void setVaccinated(){
         int temp = (int)(vaccinatedSlider.getValue());
-//        sim.vaccinatePeople(temp);
+
 
         switch(tabPane.getSelectionModel().getSelectedIndex())
         {
@@ -507,6 +520,14 @@ public class SimulatorController {
                 simCommunity4.moveToNewCommunity(community1);
                 break;
         }
+    }
+
+    public String setRFactor(){
+//            if((String) selectedDisease.getValue() == ""){
+//                return "Covid19";
+//            }
+            return (String) selectedDisease.getValue();
+
     }
 
 
