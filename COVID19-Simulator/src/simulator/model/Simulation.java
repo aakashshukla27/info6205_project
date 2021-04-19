@@ -19,14 +19,14 @@ public class Simulation {
 
 
 
-    public Simulation(int popCount, Pane world, double value) {
+    public Simulation(int popCount, Pane world) {
         people = new ArrayList<Person>();
         for (int i = 0; i < popCount; i++) {
-            Person p = new Person(State.SUSCEPTIBLE, world);
+            Person p = new Person(State.SUSCEPTIBLE, world,1);
             people.add(p);
         }
 
-        Person p = new Person(State.INFECTED, world);
+        Person p = new Person(State.INFECTED, world,1);
         people.add(p);
     }
 
@@ -61,7 +61,7 @@ public class Simulation {
 
     public void checkInMarket(){
         for(Person p: people){
-            p.checkInMarket(people);
+            p.checkInMarket(people,maskedPercentage, RFactor, (SimulatorController.aRead.get("section", "MaskEffectiveness", double.class)));
         }
     }
 

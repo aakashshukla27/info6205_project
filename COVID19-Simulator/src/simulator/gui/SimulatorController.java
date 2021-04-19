@@ -226,7 +226,7 @@ public class SimulatorController {
         switch (tabPane.getSelectionModel().getSelectedIndex()){
             case 0:
                 world.getChildren().clear();
-                sim = new Simulation(100, world, random.nextDouble());
+                sim = new Simulation(100, world);
                 sim.setSimulationType(1);
                 sim.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 sim.draw();
@@ -236,7 +236,7 @@ public class SimulatorController {
                 centralLocation.getChildren().clear();
                 centralLocation.getChildren().add(market);
                 centralLocation.getChildren().add(marketLabel);
-                simMarket = new Simulation(100, centralLocation, random.nextDouble());
+                simMarket = new Simulation(100, centralLocation);
                 simMarket.setSimulationType(2);
                 simMarket.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simMarket.draw();
@@ -246,17 +246,17 @@ public class SimulatorController {
                 community2.getChildren().clear();
                 community3.getChildren().clear();
                 community4.getChildren().clear();
-                simCommunity1 = new Simulation(5, community1, random.nextDouble());
+                simCommunity1 = new Simulation(5, community1);
                 simCommunity1.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simCommunity1.draw();
 
-                simCommunity2 = new Simulation(10, community2, random.nextDouble());
+                simCommunity2 = new Simulation(10, community2);
                 simCommunity2.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simCommunity2.draw();
-                simCommunity3 = new Simulation(5, community3, random.nextDouble());
+                simCommunity3 = new Simulation(5, community3);
                 simCommunity3.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simCommunity3.draw();
-                simCommunity4 = new Simulation(15, community4, random.nextDouble());
+                simCommunity4 = new Simulation(15, community4);
                 simCommunity4.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simCommunity4.draw();
                 setNewCommunity();

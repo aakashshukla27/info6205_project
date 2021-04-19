@@ -22,6 +22,7 @@ public class Person {
     private int quarantineAfter = 10;
     private double asymptomaticPercentage = 0.5;
     private int othersInfected = 0;
+    private double maxRange;
 
     public void setSimulationType(int simulationType) {
         this.simulationType = simulationType;
@@ -62,10 +63,10 @@ public class Person {
 
 
     final Random rand = new Random();
-    public Person(State state, Pane pane) {
+    public Person(State state, Pane pane,double maxRange) {
         this.state = state;
         loc = new Position(pane, radius);
-
+        this.maxRange = 1;
         heading = new Direction(2);
         this.pane = pane;
         c = new Circle(radius, state.getColor());
@@ -105,34 +106,43 @@ public class Person {
         c.setTranslateY(0);
     }
 
-    public void checkInMarket(ArrayList<Person> ipList){
+    public void checkInMarket(ArrayList<Person> ipList,int maskedPercentage, double RFactor, double maskEffectiveness){
         if(simulationType == 2){
             boolean toTransmit = false;
+            Person temp=null;
+            double effectiveR0 = RFactor * (double)(1 - (((double)maskedPercentage / 100) * (double)maskEffectiveness));
             for (Person person : ipList) {
-                if (person.isInMarket() && (person.getState() == State.INFECTED)) {
+                
+                if (person.isInMarket() && (person.getState() == State.INFECTED) && person.othersInfected<Math.ceil(effectiveR0)) {
                     toTransmit = true;
+                    temp = person;
                     break;
                 }
             }
             if(toTransmit && isInMarket()){
-                double random = Math.random();
-                if(mask && vaccinated){
-                    if(random < 0.06){
-                        setState(State.INFECTED);
-                        timeStamp = LocalDateTime.now();
-                    }
-                }
-                else if(!mask && vaccinated){
-                    if(random < 0.20){
-                        setState(State.INFECTED);
-                        timeStamp = LocalDateTime.now();
-                    }
-                }
-                else if(!mask){
-                    setState(State.INFECTED);
-                    timeStamp = LocalDateTime.now();
-                }
+               setState(State.INFECTED);
+               this.timeStamp = LocalDateTime.now();
+               temp.othersInfected++;
             }
+//            if(toTransmit && isInMarket()){
+//                double random = (maxRange) * rand.nextDouble();
+//                if(mask && vaccinated){
+//                    if(random < 0.06){
+//                        setState(State.INFECTED);
+//                        timeStamp = LocalDateTime.now();
+//                    }
+//                }
+//                else if(!mask && vaccinated){
+//                    if(random < 0.20){
+//                        setState(State.INFECTED);
+//                        timeStamp = LocalDateTime.now();
+//                    }
+//                }
+//                else if(!mask){
+//                    setState(State.INFECTED);
+//                    timeStamp = LocalDateTime.now();
+//                }
+//            }
 
 
         }
@@ -161,7 +171,7 @@ public class Person {
 
             if (other.state == State.INFECTED && state == State.SUSCEPTIBLE) {
 
-                double effectiveR0 = RFactor * (double)(1 - ((maskedPercentage / 100) * maskEffectiveness));
+                double effectiveR0 = RFactor * (double)(1 - (((double)maskedPercentage / 100) * (double)maskEffectiveness));
 
                 if (other.othersInfected < Math.ceil(effectiveR0)) {
                     setState(State.INFECTED);
@@ -250,9 +260,24 @@ public class Person {
 
             origin = new Position(loc.getX(), loc.getY());
         }
-
-
-
     }
+
+    public Position getLoc() {
+        return loc;
+    }
+
+    public void setLoc(Position loc) {
+        this.loc = loc;
+    }
+
+    public int getOthersInfected() {
+        return othersInfected;
+    }
+
+    public void setOthersInfected(int othersInfected) {
+        this.othersInfected = othersInfected;
+    }
+    
+    
 
 }
