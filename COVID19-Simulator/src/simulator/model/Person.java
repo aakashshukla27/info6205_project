@@ -158,7 +158,10 @@ public class Person {
         if(simulationType == 2){
             boolean toTransmit = false;
             Person temp=null;
-            double effectiveR0 = RFactor * (double)(1 - (((double)maskedPercentage / 100) * (double)maskEffectiveness));
+            double effectiveR0 = RFactor * (double)(1 - (((double)maskedPercentage / 100) * (double)maskEffectiveness)
+                    - (((double)vaccinatedPercentage / 100) * (double)vaccineEfficacy)
+            );
+
             for (Person person : ipList) {
                 
                 if (person.isInMarket() && (person.getState() == State.INFECTED) && person.othersInfected<Math.ceil(effectiveR0)) {
