@@ -23,7 +23,7 @@ Covid 19 growth simulation will be done based on the following conditions:<br/>
 <hr/>
 1. Worst case growth of created algorithm.<br/>
 2. Explanation of invariant and entropy.<br/>
-3. Comparison with SARS 2003 virus.<br/>
+3. Comparison with another virus.<br/>
 4. Unit testing<br/>
 
 
