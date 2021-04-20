@@ -216,7 +216,7 @@ public class SimulatorController {
         switch (tabPane.getSelectionModel().getSelectedIndex()){
             case 0:
                 world.getChildren().clear();
-                sim = new Simulation(100, world);
+                sim = new Simulation(130, world);
                 sim.setSimulationType(1);
                 sim.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 sim.draw();
@@ -226,7 +226,7 @@ public class SimulatorController {
                 centralLocation.getChildren().clear();
                 centralLocation.getChildren().add(market);
                 centralLocation.getChildren().add(marketLabel);
-                simMarket = new Simulation(100, centralLocation);
+                simMarket = new Simulation(110, centralLocation);
                 simMarket.setSimulationType(2);
                 simMarket.setRFactor(setRFactor() == "" ? "Covid19" : setRFactor());
                 simMarket.draw();

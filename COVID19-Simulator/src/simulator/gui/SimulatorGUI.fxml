@@ -30,13 +30,22 @@
 
          <children>
 
-            <Button fx:id="resetButton" mnemonicParsing="false" onAction="#setup" text="Reset" />
+            <Button fx:id="resetButton" mnemonicParsing="false" onAction="#setup" styleClass="buttonStyle2" text="Reset">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin></Button>
 
-            <Button fx:id="startButton" mnemonicParsing="false" onAction="#start" text="Start" />
+            <Button fx:id="startButton" mnemonicParsing="false" onAction="#start" styleClass="buttonStyle2" text="Start">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin></Button>
 
-            <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stop" text="Stop" />
+            <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stop" styleClass="buttonStyle2" text="Stop">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin></Button>
 
-            <Button fx:id="stepButton" mnemonicParsing="false" onAction="#step" text="Step" />
+            <Button fx:id="stepButton" mnemonicParsing="false" onAction="#step" styleClass="buttonStyle2" text="Step" />
 
          </children>
 
@@ -145,7 +154,7 @@
                   <Insets left="10.0" right="10.0" />
                </padding>
             </Slider>
-            <Label text="Timestep" textFill="WHITE" />
+            <Label text="Time" textFill="WHITE" />
             <TextField fx:id="stepCount" editable="false" maxHeight="-Infinity" maxWidth="284.0" prefHeight="17.0" prefWidth="254.0" stylesheets="@styles.css">
                <opaqueInsets>
                   <Insets />
@@ -197,18 +206,18 @@
                   <Text fill="WHITE" layoutX="37.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Removed" textAlignment="CENTER" wrappingWidth="80.98307228088379" />
                </children>
             </Pane>
-            <ScrollPane prefHeight="171.0" prefWidth="278.0">
+            <ScrollPane prefHeight="165.0" prefWidth="278.0">
               <content>
-                <AnchorPane fx:id="timechart" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="142.0" prefWidth="500.0" style="-fx-background-color: black;" />
+                <AnchorPane fx:id="timechart" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="144.0" prefWidth="500.0" style="-fx-background-color: black;" />
               </content>
             </ScrollPane>
 
             <Label prefHeight="21.0" prefWidth="278.0" text="                       Population Over Time" textFill="WHITE" />
 
-                        <Pane fx:id="histogram" prefHeight="142.0" prefWidth="278.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
+                        <Pane fx:id="histogram" prefHeight="134.0" prefWidth="278.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
 
             <Label prefHeight="21.0" prefWidth="272.0" text="                     Category Count Histogram" textFill="WHITE" />
-            <Pane fx:id="quarantine" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
+            <Pane fx:id="quarantine" prefHeight="173.0" prefWidth="278.0" style="-fx-border-color: white; -fx-border-width: 0.5px;" />
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Quarantine Zone " textAlignment="CENTER" wrappingWidth="283.9830722808838" />
 
          </children>
