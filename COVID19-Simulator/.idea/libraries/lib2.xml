@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lib2">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../ini4idea-211.6693.44/ini4idea/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../ini4idea-211.6693.44/ini4idea/lib" recursive="false" />
+  </library>
+</component>
