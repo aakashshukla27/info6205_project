@@ -321,7 +321,22 @@ public class Person {
     public void setOthersInfected(int othersInfected) {
         this.othersInfected = othersInfected;
     }
-    
-    
 
+    /**
+     *
+     * @return sick time
+     */
+    public int getSickTime() {
+        return sickTime;
+    }
+
+    /**
+     *
+     * @param sickTime
+     */
+    public void setSickTime(int sickTime) {
+        this.sickTime = sickTime;
+    }
+    
+    
 }
