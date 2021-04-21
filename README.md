@@ -8,7 +8,7 @@ Kunjan 001553294
 
 ### Project Topic
 <hr/>
-Covid 19 growth simulation, impact of remedial measures and comparison with SARS outbreak of 2003. 
+Covid 19 growth simulation, impact of remedial measures and comparison with MERS. 
 
 ### Basic Information
 <hr/>
@@ -26,4 +26,9 @@ Covid 19 growth simulation will be done based on the following conditions:<br/>
 3. Comparison with another virus.<br/>
 4. Unit testing<br/>
 
+###Setup
+<hr/>
+1. Ensure the latest JRE is installed on your system.
+2. Add reference to lib folder of javafx to your app as dependency.
+3. Add --module-path "Path to JavaFx \Java\javafx-sdk-11.0.2\lib" --add-modules javafx.controls,javafx.fxml to the VM options (refer to LLD for further details). 
 
