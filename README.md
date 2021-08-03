@@ -32,7 +32,7 @@ Covid 19 growth simulation will be done based on the following conditions:<br/>
 2. Add reference to lib folder of javafx to your app as dependency.<br/>
 3. Add --module-path "Path to JavaFx \Java\javafx-sdk-11.0.2\lib" --add-modules javafx.controls,javafx.fxml to the VM options (refer to LLD for further details). <br/>
 
-### Movie Link
+### Sim Video Link
 <hr/>
 https://northeastern-my.sharepoint.com/:v:/g/personal/gala_k_northeastern_edu/EbLPSRzNKM5Pmrpwfobl2uEBeT4KCQ6lxwFNtnhzl_s_FA?e=W4R2Yb
 <br/>
